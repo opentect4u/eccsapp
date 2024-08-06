@@ -5,3 +5,4 @@ App_Data
 .user.ini
 web.config
 package-lock.json
+.env

@@ -1,8 +1,9 @@
 // VARIABLE & MODULE INITIALIZATION
 const db_details = require("../db/conString"),
     oracledb = require("oracledb");
+require('dotenv').config()
 try {
-    oracledb.initOracleClient({ libDir: "D:\\oracle\\instantclient_11_2" });
+    oracledb.initOracleClient({ libDir: process.env.INSTACLIENT_PATH });
 } catch (err) {
     console.error("Whoops!");
     console.error(err);
