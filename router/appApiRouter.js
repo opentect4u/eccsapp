@@ -969,4 +969,16 @@ appApiRouter.post('/get_holiday_home_list', async (req, res) => {
   res.send(resDt);
 })
 
+appApiRouter.post('/get_about_dtls', async (req, res) => {
+  var data = req.body
+  var pax_id = db_id,
+    fields = "*",
+    table_name = `md_about`,
+    where = `bank_id=${data.bank_id} AND type = '${data.type}' ${data.sl_no > 0 ? `AND SL_NO=${data.sl_no}` : ''}`,
+    order = null,
+    flag = 0;
+  var resDt = await F_Select(pax_id, fields, table_name, where, order, flag)
+  res.send(resDt);
+})
+
 module.exports = { appApiRouter, chkUser };
