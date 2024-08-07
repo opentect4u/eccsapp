@@ -58,6 +58,7 @@ const { SendNotification } = require('./controller/masterController');
 const { Notification_cnt } = require('./controller/masterController');
 const { UpdateNotification } = require('./controller/masterController');
 const { adminRouter } = require("./router/adminRouter");
+const { AboutRouter } = require('./router/aboutRouter');
 // END
 
 
@@ -67,6 +68,7 @@ const { adminRouter } = require("./router/adminRouter");
 // app.use("/api", apiRouter);
 app.use("/api", appApiRouter);
 app.use("/admin", adminRouter);
+app.use("/admin", AboutRouter);
 // app.use('/bccs', bccsApkApiRouter);
 // app.use('/bccs_admin', bccsAdminRouter);
 // END

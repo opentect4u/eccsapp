@@ -1,0 +1,102 @@
+<%- include('../template/header'); %>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1><%= heading %></h1>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <% if(message){ %>
+      <div
+        class="alert alert-<%= message.type; %> alert-dismissible fade show"
+        role="alert"
+      >
+        <strong> <%= message.message; %> </strong>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <% } %>
+      <div class="row">
+        <!-- /.col -->
+        <div class="col-md-12">
+          <div class="card card-primary card-outline">
+            <div class="card-body">
+              <form action="/admin/entry_about" method="post">
+                <div class="row">
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label for="about_type" class="col-form-label"
+                        >About Type</label
+                      >
+                      <select
+                        name="about_type"
+                        id="about_type"
+                        class="form-control select2"
+                        required
+                      >
+                        <option>Select About Section</option>
+                        <% if(about_list){ about_list.forEach((dt) => { %>
+                        <option value="<%= dt.id %>">
+                          <%= dt.name %>
+                        </option>
+                        <% }) } %>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label for="narration">Narration</label>
+                      <textarea
+                        class="form-control"
+                        id="narration"
+                        name="narration"
+                        rows="3"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="row text-center">
+                  <div class="col-12">
+                    <button type="submit" class="btn btn-danger">Send</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<%- include('../template/footer'); %>
+
+<script>
+    $('#about_type').on('change', function(){
+        console.log($(this).val());
+        
+    })
+</script>
