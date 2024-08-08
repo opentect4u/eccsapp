@@ -71,7 +71,7 @@ appApiRouter.post('/deposit_type_list', async (req, res) => {
   var pax_id = db_id,
     fields = "A.ACC_TYPE_CD, initcap(B.ACC_TYPE_DESC)ACC_TYPE_DESC, A.ACC_NUM, A.CLR_BAL Balance",
     table_name = "TM_DEPOSIT A, MM_ACC_TYPE B",
-    where = `A.CUST_CD = ${cust_cd} AND nvl(A.ACC_STATUS,'O') <> 'C' AND A.ACC_TYPE_CD = B.ACC_TYPE_CD`,
+    where = `A.CUST_CD = ${cust_cd} AND nvl(A.ACC_STATUS,'O') <> 'C' AND A.ACC_TYPE_CD = B.ACC_TYPE_CD AND B.ACC_TYPE_CD != 12`,
     order = `Order By A.ACC_TYPE_CD, A.ACC_NUM`,
     flag = 1;
   var resDt = await F_Select(pax_id, fields, table_name, where, order, flag)
@@ -198,7 +198,7 @@ appApiRouter.post('/loan_acc_dtls', async (req, res) => {
   var loan_id = data.loan_id,
     acc_cd = data.acc_cd;
   var pax_id = db_id,
-    fields = "a.ACC_CD,initcap(b.acc_type_desc)acc_type_desc,a.LOAN_ID,a.PARTY_CD,c.MEMBER_NAME CUST_NAME,a.DISB_DT,a.DISB_AMT,a.CURR_RT CURR_INTT_RATE,A.OVD_RT,a.INSTL_NO,'' PIRIODICITY,'' INSTL_START_DT,a.curr_prn,a.ovd_prn,a.curr_intt,a.ovd_intt,a.last_intt_calc_dt",
+    fields = "a.ACC_CD,initcap(b.acc_type_desc)acc_type_desc,a.LOAN_ID,a.PARTY_CD,c.MEMBER_NAME CUST_NAME,a.SANC_DT DISB_DT,a.SANC_AMT DISB_AMT,a.CURR_RT CURR_INTT_RATE,A.OVD_RT,a.INSTL_NO,'' PIRIODICITY,'' INSTL_START_DT,a.curr_prn,a.ovd_prn,a.curr_intt,a.ovd_intt,a.last_intt_calc_dt",
     table_name = "TM_LOAN_ALL a, MM_ACC_TYPE b, MM_MEMBER c",
     where = `a.acc_Cd= b.acc_type_cd AND a.party_cd= c.MEMBER_ID AND a.acc_cd=${acc_cd} AND a.loan_id = '${loan_id}'`,
     order = null,
@@ -213,7 +213,7 @@ appApiRouter.post('/loan_stmt_download', async (req, res) => {
     frmdt = dateFormat(data.frm_dt, "dd-mmm-yy"),
     todt = dateFormat(data.to_dt, "dd-mmm-yy");
   var pax_id = db_id,
-    fields = "trans_dt, trans_cd, trans_type trans_flag, decode(trans_type,'B','Disbursement', 'I', 'Interest', 'R','Recovery', 'O','Overdue') trans_type, disb_amt, curr_prn_recov+ovd_prn_recov prn_recov, curr_intt_recov+ovd_intt_recov intt_recov, curr_intt_calculated+ovd_intt_calculated intt_calc, PRN_TRF, curr_prn, ovd_prn, curr_intt, ovd_intt, last_intt_calc_dt",
+    fields = "trans_dt, trans_cd, trans_type trans_flag, decode(trans_type,'B','Disbursement', 'I', 'Interest', 'R','Recovery', 'O','Overdue') trans_type, disb_amt, curr_prn_recov+ovd_prn_recov prn_recov, curr_intt_recov+ovd_intt_recov intt_recov, curr_intt_calculated+ovd_intt_calculated intt_calc, PRN_TRF, curr_prn, ovd_prn, curr_intt, ovd_intt, last_intt_calc_dt, curr_prn_recov, curr_intt_recov, ovd_prn_recov, ovd_intt_recov",
     table_name = "GM_LOAN_TRANS",
     where = `loan_id ='${loan_id}' AND trans_dt BETWEEN '${frmdt}' AND '${todt}'`,
     order = 'ORDER BY trans_dt, trans_cd',
@@ -415,25 +415,25 @@ appApiRouter.post("/send_otp", async (req, res) => {
   var to = data.phone_no.split(' ').join('');
   to = to.length > 10 ? to.slice(-10) : to
   var otp = Math.floor(1000 + Math.random() * 9000);
-	var text = `OTP for your registered mobile number verification is ${otp}.Please validate it to login to the mobile app.Thank you for using mView. -PURDCS`;
+	var text = `OTP for mobile verification is ${otp}. This code is valid for 5 minutes. Please do not share this OTP with anyone.-SYNGIC`;
   console.log('PURDCS OTP: ', to, otp);
   var options = {
     'method': 'GET',
-	  'url': `http://sms.synergicapi.in/api.php?username=puriuccs&apikey=AuyJehOqnvI0&senderid=PURDCS&route=OTP&mobile=${to.split(' ').join('')}&text=${text}`,
+	  'url': `https://bulksms.sssplsales.in/api/api_http.php?username=SYNERGIC&password=SYN@526RGC&senderid=SYNGIC&to=${to.split(' ').join('')}&text=${text}&route=Informative&type=text`,
     'headers': {
     }
   };
-  res.send({ suc: 1, msg: 'Otp Sent', otp: 1234 })
-  // request(options, function (error, response) {
-  //   if (error) {
-  //     console.log(err);
-  //     res.send({ suc: 0, msg: 'Otp Not Sent', otp })
-  //   }
-  //   else {
-  //     console.log('OTP Console', response.body, otp);
-  //     res.send({ suc: 1, msg: 'Otp Sent', otp })
-  //   }
-  // });
+  // res.send({ suc: 1, msg: 'Otp Sent', otp: 1234 })
+  request(options, function (error, response) {
+    if (error) {
+      console.log(err);
+      res.send({ suc: 0, msg: 'Otp Not Sent', otp })
+    }
+    else {
+      console.log('OTP Console', response.body, otp);
+      res.send({ suc: 1, msg: 'Otp Sent', otp })
+    }
+  });
 })
 
 appApiRouter.get('/cal_details', async (req, res) => {

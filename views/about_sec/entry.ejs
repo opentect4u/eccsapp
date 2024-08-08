@@ -72,6 +72,7 @@
                     </div>
                   </div>
                 </div>
+                <input type="hidden" id="sl_no" name="sl_no" value="">
                 <div class="row text-center">
                   <div class="col-12">
                     <button type="submit" class="btn btn-danger">Send</button>
@@ -97,6 +98,30 @@
 <script>
     $('#about_type').on('change', function(){
         console.log($(this).val());
-        
+        $.ajax({
+            method:'POST',
+            url: '/admin/get_about_dtls_ajax',
+            data: {
+                type: $(this).val()
+            },
+            dataType: 'html',
+            beforeSend: function(){
+                $('.loader-wrapper').show()
+            },
+            success: function(result){
+                var res = JSON.parse(result);
+                // console.log(res);
+                $('#narration').text('')
+                $('#sl_no').val(0)
+
+                if(res.suc > 0){
+                  $('#narration').text(res.msg instanceof Object ? (res.msg.ABOUT_DTLS != '' || res.msg.ABOUT_DTLS ? res.msg.ABOUT_DTLS : '') : '')
+                  $('#sl_no').val(res.msg instanceof Object ? res.msg.SL_NO : 0)
+                }
+            },
+            complete: function(){
+                $('.loader-wrapper').hide()
+            }
+        })
     })
 </script>

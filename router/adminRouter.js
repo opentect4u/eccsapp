@@ -36,7 +36,7 @@ adminRouter.post("/login", async (req, res) => {
   var data = req.body;
   var userId = data.user_id;
   var pax_id = db_id,
-    fields = "user_cd, last_login, mpin, active_status, user_name",
+    fields = "user_cd, last_login, mpin, active_status, user_name, bank_id",
     table_name = "md_user",
     where = `user_cd ='${userId}' AND USER_TYPE = 'A'`,
     order = null,
