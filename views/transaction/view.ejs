@@ -1,0 +1,230 @@
+<%- include('../template/header'); %>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1><%= heading %></h1>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <% if(message){ %>
+      <div class="alert alert-<%= message.type; %> alert-dismissible fade show" role="alert">
+        <strong><%= message.message; %></strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <% } %>
+      <!-- SELECT2 EXAMPLE -->
+      <div class="card card-default">
+        <div class="card-header">
+          <!-- <h3 class="card-title"><%# sub_heading %></h3> -->
+          <!-- <div class="card-tools">
+            <a href="/admin/request_edit?id=0" class="btn btn-primary">Add New</a>
+          </div> -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+          <form action="/request_edit" method="post">
+            <div class="row" id="divToPrint">
+              <div class="col-md-12">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <!-- <th></th> -->
+                      <th>#</th>
+                      <th>Date</th>
+                      <th>ID</th>
+                      <th>Customer Name</th>
+                      <th>Bank Name</th>
+                      <th>Amount</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if(trn_dt.length > 0){ 
+                        var i = 1; trn_dt.forEach((dt) =>
+                        { %>
+                        <tr>
+                            <td><%= i %></td>
+                            <td><%= dt.TRNS_DT ? dateFormat(dt.TRNS_DT, "dd/mm/yyyy") : '' %></td>
+                            <td><%= dt.TRNS_ID %></td>
+                            <td><%= dt.USER_NAME %></td>
+                            <td><%= dt.BANK_NAME %></td>
+                            <td><%= dt.TRNS_AMT %></td>
+                            <td>
+                                <button type="button" onclick="showTransModal('<%= dt.TRNS_ID %>')" class="btn btn-success">
+                                View
+                                </button>
+                            </td>
+                        </tr>
+                    <% i++; }) }else{ %>
+                    <tr>
+                      <td colspan="4" class="text-center">No data found</td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- <center>
+              <button
+                type="button"
+                class="btn btn-outline-success mt-4"
+                onclick="printDiv()"
+              >
+                Print
+              </button>
+            </center> -->
+          </form>
+        </div>
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="TrnsModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="TrnsModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="TrnsModalTitle">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+                <label for="">Transaction ID:</label>
+                <span id="trn_id"></span>
+            </div>
+            <div class="col-md-6">
+              <label for="">Transaction Date:</label>
+              <span id="trn_dt"></span>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+                <label for="">Customer Name:</label>
+                <span id="cust_name"></span>
+            </div>
+          </div>  
+          <div class="row">
+            <div class="col-md-12">
+              <label for="">Transaction Amount:</label>
+              <span id="trn_amt"></span>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+                <label for="">Bank Name:</label>
+                <span id="bank_name"></span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="">Cheque No:</label>
+              <span id="chq_no"></span>
+          </div>
+            <div class="col-md-6">
+                <label for="">Cheque Date:</label>
+                <span id="chq_dt"></span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- /.content-wrapper -->
+<%- include('../template/footer'); %>
+
+<script>
+  $(function() {
+	  $("#example2").DataTable({
+      paging: true,
+      lengthChange: false,
+      searching: true,
+      ordering: true,
+      info: true,
+      autoWidth: false,
+      responsive: true,
+      buttons: ["csv", "excel", "pdf"]
+    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+  });
+</script>
+<script>
+  var trn_dt = <%- JSON.stringify(trn_dt) %>;
+    // function deleteUser(){
+    //     if (confirm('Are you sure, you want to delete permanently?')) {
+    //     // Save it!
+    //        return true;
+    //     }else{
+    //         return false;
+    //     }
+    // }
+    function showTransModal(id){
+      var data = {}
+      if(trn_dt.length > 0){
+        data = trn_dt.filter(dt => dt.TRNS_ID == id)
+        data = data.length > 0 ? data[0] : {}
+      }
+      $('#TrnsModal').modal('toggle')
+      $('#trn_id').text(data.TRNS_ID ? data.TRNS_ID : 0)
+      $('#trn_dt').text(data.TRNS_DT ? data.TRNS_DT : '')
+      $('#cust_name').text(data.USER_NAME ? data.USER_NAME : '')
+      $('#trn_amt').text(data.TRNS_AMT ? data.TRNS_AMT : '')
+      $('#bank_name').text(data.BANK_NAME ? data.BANK_NAME : '')
+      $('#chq_no').text(data.CHQ_NO ? data.CHQ_NO : '')
+      $('#chq_dt').text(data.CHQ_DT ? data.CHQ_DT : '')
+    }
+</script>
+<script>
+  function printDiv() {
+    var divToPrint = document.getElementById("divToPrint");
+
+    var WindowObject = window.open("", "Print-Window");
+    WindowObject.document.open();
+    WindowObject.document.writeln("<!DOCTYPE html>");
+    WindowObject.document.writeln(
+      '<html><head><title></title><style type="text/css">'
+    );
+
+    WindowObject.document.writeln(
+      "@media print { .center { text-align: center;}" +
+      ".inline { display: inline; }" +
+      ".underline { text-decoration: underline; }" +
+      ".left { margin-left: 315px;} " +
+      ".right { margin-right: 375px; display: inline; }" +
+      "table { border-collapse: collapse; font-size: 10px;}" +
+      "th, td { border: 1px solid black; border-collapse: collapse; padding: 6px;}" +
+      "th, td { }" +
+      ".border { border: 1px solid black; } " +
+      ".bottom { bottom: 5px; width: 100%; position: fixed " +
+      "} } </style>"
+    );
+    WindowObject.document.writeln('</head><body onload="window.print()">');
+    WindowObject.document.writeln(divToPrint.innerHTML);
+    WindowObject.document.writeln("</body></html>");
+    WindowObject.document.close();
+    setTimeout(function() {
+      WindowObject.close();
+    }, 10);
+  }
+</script>
