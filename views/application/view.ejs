@@ -1,0 +1,183 @@
+<%- include('../template/header'); %>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1><%= heading %></h1>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <% if(message){ %>
+      <div class="alert alert-<%= message.type; %> alert-dismissible fade show" role="alert">
+        <strong><%= message.message; %></strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <% } %>
+      <!-- SELECT2 EXAMPLE -->
+      <div class="card card-default">
+        <div class="card-header">
+          <h3 class="card-title"><%= sub_heading %></h3>
+          <!-- <div class="card-tools">
+            <a href="/admin/request_edit?id=0" class="btn btn-primary">Add New</a>
+          </div> -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="row" id="divToPrint">
+              <div class="col-md-12">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Date</th>
+                      <th>Member ID</th>
+                      <th>Name</th>
+                      <% if(flag == 'M'){ %>
+                        <th>Memo Number</th>
+                        <th>Memo Date</th>
+                        <th>Total Share</th>
+                      <% } %>
+                      <% if(flag == 'G'){ %>
+                        <th>Membership Number</th>
+                        <th>Loan Amount</th>
+                        <th>Purpose</th>
+                        <th>Repaid Date</th>
+                      <% } %>
+                      <% if(flag == 'A'){ %>
+                        <th>Membership Number</th>
+                        <th>Stock Hold</th>
+                        <th>Allot Stock</th>
+                      <% } %>
+                      <th>View</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if(appDt.length > 0){
+                        var i = 1
+                        appDt.forEach(dt => { %>
+                            <tr>
+                                <td><%= i %></td>
+                                <td><%= dateFormat(dt.ENTRY_DT, 'dd/mm/yyyy') %></td>
+                                <td><%= dt.MEMBER_ID %></td>
+                                <td><%= dt.MEM_NAME %></td>
+                                <% if(flag == 'M'){ %>
+                                    <td><%= dt.MEMO_NO %></td>
+                                    <td><%= dateFormat(dt.MEMO_DT, 'dd/mm/yyyy') %></td>
+                                    <td><%= dt.TOT_SHARE %></td>
+                                <% } %>
+                                <% if(flag == 'G'){ %>
+                                    <td><%= dt.MEMBERSHIP_NUMBER %></td>
+                                    <td><%= dt.APPLY_LOAN_AMT %></td>
+                                    <td><%= dt.PURPOSE %></td>
+                                    <td><%= dt.REPAID_DT %></td>
+                                <% } %>
+                                <% if(flag == 'A'){ %>
+                                    <td><%= dt.MEMBERSHIP_NUMBER %></td>
+                                    <td><%= dt.STOCK_HOLD %></td>
+                                    <td><%= dt.STOCK_ALLOT %></td>
+                                <% } %>
+                                <td><a href="/admin/application_form?flag=<%= encFlag %>&id=<%= dt.SL_NO %>" target="_blank" class="btn btn-primary">View</a></td>
+                            </tr>
+                    <% i++;
+                        })
+                    }else{ %>
+                        <tr>
+                            <td colspan="8" class="text-center text-danger">No data found</td>
+                        </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<%- include('../template/footer'); %>
+
+<script>
+  $(function() {
+    // $("#example1").DataTable({
+    // "responsive": true, "lengthChange": false, "autoWidth": false,
+    // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    // }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    // $("#example2").DataTable({
+    //   paging: true,
+    //   lengthChange: false,
+    //   searching: true,
+    //   ordering: true,
+    //   info: true,
+    //   autoWidth: false,
+    //   responsive: true,
+    // });
+	  $("#example2").DataTable({
+      paging: true,
+      lengthChange: false,
+      searching: true,
+      ordering: true,
+      info: true,
+      autoWidth: false,
+      responsive: true,
+      buttons: ["csv", "excel", "pdf"]
+    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+  });
+</script>
+<script>
+    function deleteUser(){
+        if (confirm('Are you sure, you want to delete permanently?')) {
+        // Save it!
+           return true;
+        }else{
+            return false;
+        }
+    }
+</script>
+<script>
+  function printDiv() {
+    var divToPrint = document.getElementById("divToPrint");
+
+    var WindowObject = window.open("", "Print-Window");
+    WindowObject.document.open();
+    WindowObject.document.writeln("<!DOCTYPE html>");
+    WindowObject.document.writeln(
+      '<html><head><title></title><style type="text/css">'
+    );
+
+    WindowObject.document.writeln(
+      "@media print { .center { text-align: center;}" +
+      ".inline { display: inline; }" +
+      ".underline { text-decoration: underline; }" +
+      ".left { margin-left: 315px;} " +
+      ".right { margin-right: 375px; display: inline; }" +
+      "table { border-collapse: collapse; font-size: 10px;}" +
+      "th, td { border: 1px solid black; border-collapse: collapse; padding: 6px;}" +
+      "th, td { }" +
+      ".border { border: 1px solid black; } " +
+      ".bottom { bottom: 5px; width: 100%; position: fixed " +
+      "} } </style>"
+    );
+    WindowObject.document.writeln('</head><body onload="window.print()">');
+    WindowObject.document.writeln(divToPrint.innerHTML);
+    WindowObject.document.writeln("</body></html>");
+    WindowObject.document.close();
+    setTimeout(function() {
+      WindowObject.close();
+    }, 10);
+  }
+</script>

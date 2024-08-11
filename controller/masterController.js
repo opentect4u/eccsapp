@@ -356,4 +356,51 @@ const F_Delete = (pax_id, table_name, where) => {
     })
 }
 
-module.exports = { F_Select, F_Insert, RunProcedure, F_Insert_Puri, Api_Insert, SendNotification, F_Delete, UpdateNotification, Notification_cnt }
+const saveAboutSection = (data, user_name, dateTime, pax_id)=> {
+    return new Promise(async (resolve, reject) => {
+        try{
+            // CREATE DB CONNECTION
+            const pool = await oracledb.createPool(db_details[pax_id]);
+            const con = await pool.getConnection();
+            // END
+
+            var values = {
+                bankId: { val: parseInt(pax_id), type: oracledb.NUMBER, maxSize: 11 },
+                typeTxt: { val: data.about_type, type: oracledb.STRING, maxSize: 50 },
+                aboutDtls: { val: data.narration.split("'").join("\\'").split('\r\n').join(' '), type: oracledb.STRING, maxSize: 4000 },
+                modifiedBy: { val: user_name, type: oracledb.STRING, maxSize: 50 },
+                modifiedDt: { val: new Date(dateTime), type: oracledb.DATE },
+                slNo: {val: parseInt(data.sl_no), type: oracledb.NUMBER, maxSize: 11}
+            }
+    
+            // SQL QUERY
+            const sql = data.sl_no > 0 ? `UPDATE md_about SET "TYPE" = '${data.about_type}', ABOUT_DTLS = '${data.narration.split("'").join("\\'").split('\r\n').join(' ')}', MODIFIED_BY = '${user_name}', MODIFIED_DT = '${dateTime}' WHERE sl_no = ${data.sl_no}` :
+                `INSERT INTO md_about (SL_NO, BANK_ID, TYPE, ABOUT_DTLS, CREATED_BY, CREATED_DT) VALUES ((SELECT Decode(MAX(SL_NO),1,MAX(SL_NO),0)+1 FROM md_about), :bankId, :typeTxt, :aboutDtls, :modifiedBy, :modifiedDt)`; // 0-> INSERT NEW DATA; 1-> UPDATE TABLE DATA
+            console.log(sql);
+    
+            try {
+                // EXICUTE QUERY AND RETURN RESULT
+                if (await con.execute(sql, { autoCommit: true })) {
+                    res_data = { suc: 1, msg: 'success' };
+                } else {
+                    res_data = { suc: 0, msg: 'err' };
+                }
+                await con.close();
+                await pool.close();
+                // const res = await con.execute(`SELECT * FROM "${table_name}"`);
+                resolve(res_data)
+            } catch (err) {
+                console.log(err);
+                await con.close();
+                await pool.close();
+                resolve({ suc: 0, msg: err })
+            }
+            //END
+        }catch(err){
+            console.log(err);
+            resolve({ suc: 0, msg: err })
+        }
+    })
+}
+
+module.exports = { F_Select, F_Insert, RunProcedure, F_Insert_Puri, Api_Insert, SendNotification, F_Delete, UpdateNotification, Notification_cnt, saveAboutSection }

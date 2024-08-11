@@ -1,6 +1,6 @@
 const express = require('express'),
 app = express(),
-port = process.env.PORT || 3011,
+port = process.env.PORT || 3012,
 http = require('http'),
 socketIO = require('socket.io'),
 // https = require('https'),
@@ -60,6 +60,7 @@ const { UpdateNotification } = require('./controller/masterController');
 const { adminRouter } = require("./router/adminRouter");
 const { AboutRouter } = require('./router/aboutRouter');
 const { transRouter } = require('./router/transactionRouter');
+const { appFormRouter } = require('./router/applicationFormRouter');
 // END
 
 
@@ -71,15 +72,19 @@ app.use("/api", appApiRouter);
 app.use("/admin", adminRouter);
 app.use("/admin", AboutRouter);
 app.use("/admin", transRouter);
+app.use("/admin", appFormRouter);
 // app.use('/bccs', bccsApkApiRouter);
 // app.use('/bccs_admin', bccsAdminRouter);
 // END
 
 app.get('/', (req, res) => {
-  var bcrypt = require("bcrypt")
-  var password = bcrypt.hashSync('3118', 10);
-  console.log(password);
-    res.send('Helow World1');
+  var enc = Buffer.from('A').toString('base64')
+  console.log(encodeURIComponent(enc));
+  res.redirect('/admin')
+  // var bcrypt = require("bcrypt")
+  // var password = bcrypt.hashSync('3118', 10);
+  // console.log(password);
+  //   res.send('Helow World1');
 })
 
 // https.createServer(options, function (req, res) {

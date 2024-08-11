@@ -1,7 +1,8 @@
 const AboutRouter = require('express').Router()
 const { ABOUT_TYPE_LIST } = require('../model/masterModel')
-const {F_Select, Api_Insert} = require('../controller/masterController'),
-dateFormat = require('dateformat');
+const {F_Select, Api_Insert, saveAboutSection} = require('../controller/masterController'),
+dateFormat = require('dateformat'),
+oracledb = require("oracledb");
 
 AboutRouter.get('/entry_about', async (req, res) => {
     var about_list = ABOUT_TYPE_LIST
@@ -26,29 +27,31 @@ AboutRouter.post('/entry_about', async (req, res) => {
     var user = req.session.user
     var data = req.body;
   var datetime = dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss");
-  var pax_id = user.BANK_ID,
-    table_name = "md_about",
-    fields = data.sl_no > 0 ? `TYPE = :type, ABOUT_DTLS = :aboutDtls, MODIFIED_BY = :modifiedBy, MODIFIED_DT = :modifiedDt` : `SL_NO, BANK_ID, TYPE, ABOUT_DTLS, CREATED_BY, CREATED_DT`,
-    fieldIndex = `((SELECT Decode(MAX(SL_NO),1,MAX(SL_NO),0)+1 FROM md_about), :bankId, :type, :aboutDtls, :modifiedBy, :modifiedDt)`,
-    values = {
-        bankId: user.BANK_ID,
-        type: data.about_type,
-        aboutDtls: data.narration,
-        modifiedBy: user.USER_NAME,
-        modifiedDt: dateFormat(datetime, "dd-mmm-yy")
-    },
-    where = data.sl_no > 0 ? `sl_no = ${data.sl_no}` : null,
-    flag = data.sl_no > 0 ? 1 : 0;
+  // var pax_id = user.BANK_ID,
+  //   table_name = "md_about",
+  //   fields = data.sl_no > 0 ? `TYPE = :typeTxt, ABOUT_DTLS = :aboutDtls, MODIFIED_BY = :modifiedBy, MODIFIED_DT = :modifiedDt` : `SL_NO, BANK_ID, TYPE, ABOUT_DTLS, CREATED_BY, CREATED_DT`,
+  //   fieldIndex = `((SELECT Decode(MAX(SL_NO),1,MAX(SL_NO),0)+1 FROM md_about), :bankId, :typeTxt, :aboutDtls, :modifiedBy, :modifiedDt)`,
+  //   values = {
+  //       bankId: { val: parseInt(user.BANK_ID), type: oracledb.NUMBER, maxSize: 11 },
+  //       typeTxt: { val: data.about_type, type: oracledb.STRING, maxSize: 50 },
+  //       aboutDtls: { val: data.narration.split("'").join("\\'").split('\r\n').join(' '), type: oracledb.STRING, maxSize: 4000 },
+  //       modifiedBy: { val: user.USER_NAME, type: oracledb.STRING, maxSize: 50 },
+  //       modifiedDt: { val: new Date(datetime), type: oracledb.DATE },
+  //       slNo: {val: parseInt(data.sl_no), type: oracledb.NUMBER, maxSize: 11}
+  //   },
+  //   where = data.sl_no > 0 ? `sl_no = :slNo` : null,
+  //   flag = data.sl_no > 0 ? 1 : 0;
     
-  var resDt = await Api_Insert(
-    pax_id,
-    table_name,
-    fields,
-    fieldIndex,
-    values,
-    where,
-    flag
-  );
+  // var resDt = await Api_Insert(
+  //   pax_id,
+  //   table_name,
+  //   fields,
+  //   fieldIndex,
+  //   values,
+  //   where,
+  //   flag
+  // );
+  var resDt = await saveAboutSection(data, user.USER_NAME, dateFormat(datetime, "dd-mmm-yy"), user.BANK_ID)
   res.send(resDt);
 })
 
