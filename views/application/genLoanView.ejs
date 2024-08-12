@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/dist/css/viewForm.css">
 </head>
 
-<body onload="window.print()">
+<body>
     <div class="wrapper">
         <div id="divToPrint">
             <div class="billPrintWrapper">
@@ -25,8 +25,8 @@
                         <tr>
                             <td class="text_left">
                                 <p>
-                                    Serial No. ................................ <br>
-                                    Date of Receipt ........................ <br>
+                                    Serial No. <span class="name-text" style="width: 15vw;"><%= appDt.SL_NO %></span> <br>
+                                    Date of Receipt <span class="name-text" style="width: 15vw;"><%= dateFormat(appDt.RECEIPT_DT, "dd/mm/yyyy") %></span> <br>
                                     Initial of Receiving Official.
                                 </p>
                             </td>

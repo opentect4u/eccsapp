@@ -13,7 +13,9 @@ var db_id = 1;
 adminRouter.use((req, res, next) => {
   var url = req.path;
   var user = req.session.user;
-  if (url == "/login" || user) {
+  console.log(url);
+  
+  if (url == "/login" || url == '/application_form' || user) {
     next();
   } else {
     res.redirect("/admin/login");

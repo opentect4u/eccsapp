@@ -6,7 +6,8 @@
     <link rel="stylesheet" type="text/css" href="/dist/css/viewForm.css">
 </head>
 
-<body onload="window.print()">
+<!-- <body onload="window.print()"> -->
+<body>
     <div class="wrapper">
         <div id="divToPrint">
             <div class="billPrintWrapper">
@@ -24,18 +25,18 @@
                         <tr>
                             <td class="text_left col_3">
                                 <p>
-                                    Serial No. ................................ <br>
-                                    Date of Receipt ........................ <br>
+                                    Serial No. <span class="name-text" style="width: 15vw;"><%= appDt.SL_NO %></span> <br>
+                                    Date of Receipt <span class="name-text" style="width: 15vw;"><%= dateFormat(appDt.RECEIPT_DT, "dd/mm/yyyy") %></span> <br>
                                     Initial of Receiving Official.
                                 </p>
                             </td>
-                            <td class="text_left align_top col_3 border_td">
+                            <td class="text_center align_top col_3 border_td">
                                 <p> <b>Order of the Committee of <br>
                                         Management. <br></b>
                                     Admitted as member and <br>
-                                    ..........................Shares alloted</p>
+                                    <span class="name-text" style="width: 10vw;"><%= appDt.TOT_SHARE %></span> Shares alloted</p>
                             </td>
-                            <td class="text_left align_top col_3">
+                            <td class="text_center align_top col_3">
                                 <p> <b>Observation of the Hony. <br>
                                         Secretary <br></b>
                                     Recomended for admission <br>
@@ -66,11 +67,18 @@
                         The Committee of Management <br>
                         The Presidency Division Postal Co-operative Credit Society Ltd. <br>
                         Alipore H. O. Buildings, Kolkata-700 027</p>
-                    <p>I .......................................................................................................................................................................<b>(In
-                            Block Letters)</b> a member of the </p>
-
-                    <p>of
-                        .................................................................................................................beg
+                    <p class="input-group">
+                        <span>I</span>
+                        <span class="name-text" style="width: 60vw;"><%= appDt.MEM_NAME %></span>
+                        <span class="info">(in Block Letters)</span>
+                        <span class="relation">Son/Daughter/Wife</span>
+                    </p>
+                    <!-- <p>I .......................................................................................................................................................................<b>(In
+                            Block Letters)</b> a member of the </p> -->
+                    <p>
+                        of
+                        <span class="name-text" style="width: 30vw;"><%= appDt.CO_NAME %></span>
+                        beg
                         to apply for admission as a
                         member of the Presidency Division Postal Co-operative Credit Society Ltd. I have carefully read
                         the rules
@@ -80,19 +88,20 @@
                         I enclose the following documents as required for the purpose of admission of membership. <br>
                         i) Copy of 1st page of my Service Book. <br>
                         ii) Original Department order of permanency or quasi-permanency issued by
-                        the..................................
-                        ........................................................in his memo
-                        No...................................... Dated................................. <br> <br>
+                        the
+                        <span class="name-text" style="width: 25vw;"><%= appDt.ISSUED_BY %></span>
+                        in his memo
+                        No <span class="name-text" style="width: 20vw;"><%= appDt.MEMO_NO %></span> Dated <span class="name-text" style="width: 20vw;"><%= dateFormat(appDt.MEMO_DT, "dd/mm/yyyy") %></span> <br> <br>
 
-                        I request you will kindly allot me ...................... Shares of Rupees Ten each and I hereby
+                        I request you will kindly allot me <span class="name-text" style="width: 20vw;"><%= appDt.TOT_SHARE %></span> Shares of Rupees Ten each and I hereby
                         agree to accept
                         the same or any less number that you may allot me. <br><br>
                         In accordance with the provisions of Section 69 of the W.B.C.S. Act. 1983 and Bye laws of the
                         Society. I beg to nominate and do hereby nominate my
-                        (relation)...............................................................
-                        (Name).......................................................................(Address)................................................................
-                        <b>(In Block Letters)</b>
-                        <br>......................................................................................................................................(Age).....................
+                        (relation) <span class="name-text" style="width: 15vw;"><%= appDt.NOMI_RELATION %></span>
+                        (Name) <span class="name-text" style="width: 40vw;"><%= appDt.NOMI_NAME %></span>(Address) <span class="name-text" style="width: 60vw;"><%= appDt.NOMI_ADDR %></span>
+                        <b>(In Block Letters)</b> (Age) <span class="name-text" style="width: 10vw;"><%= appDt.NOMI_AGE %></span> <br>
+
                         I declare that the particulars of information and declaration furnished by me are true and
                         correct. I also declare that I am a Citizen of the Indian Union.
                     </p>
@@ -116,20 +125,30 @@
                         <tbody>
                             <tr>
                                 <td class="text_left">
-                                    <p>i) Office in which employed................................. <br>
-                                        iii) Official designation.....................................
+                                    <p>i) Office in which employed <br> <span class="name-text" style="width: 30vw;"><%= appDt.OFFICE_NAME %></span> <br>
+                                    iii) Official designation <span class="name-text" style="width: 18vw;"><%= appDt.DESIGNATION %></span> <br>
+                                    v) Date of attaining 58 years. <span class="name-text" style="width: 18vw;"></span> <br>
+                                    vii) Monthly substantive pay <span class="name-text" style="width: 18vw;"><%= appDt.MON_SUB_PAY %></span> <br>
+                                    ix) Date of permanency or quasi permanency <span class="name-text" style="width: 30vw;"></span> <br>
+                                    xii) Permanent Address
+                                    <br>
+                                    <span class="name-text" style="width: 30vw; font-size: 15px;"><%= appDt.PER_ADDR %></span>
                                     </p>
                                 </td>
                                 <td class="text_left">
-                                    <p>ii) Official designation..................................... <br>
-                                        iv) Official designation.....................................</p>
+                                    <p>ii) Attached to <span class="name-text" style="width: 18vw;"></span> <br>
+                                    iv) Date of birth <span class="name-text" style="width: 18vw;"><%= dateFormat(appDt.DOB, "dd/mm/yyyy") %></span> <br>
+                                    vi) Date of entry in the Dept. <span class="name-text" style="width: 18vw;"><%= dateFormat(appDt.DEP_ENTRY_DT, "dd/mm/yyyy") %></span> <br>
+                                    viii) Date of last increment <span class="name-text" style="width: 18vw;"><%= dateFormat(appDt.LAST_INC_DT, "dd/mm/yyyy") %></span> <br>
+                                    x) Local Address. <br>
+                                    <span class="name-text" style="width: 30vw; font-size: 15px;"><%= appDt.LOCAL_ADDR %></span></p>
                                 </td>
                             </tr>
 
                         </tbody>
                     </table>
                     <h3>Declaration</h3>
-                    <p>I Shri.....................................................................................................solemnly
+                    <p>I Shri <span class="name-text" style="width: 50vw;"><%= appDt.MEM_NAME %></span> solemnly
                         declare that I am not
                         a member of any other Posts and Telegraphs Co-operative Credit Society and agree that I shall
                         not be a
@@ -141,8 +160,8 @@
                         ( 2 )
                         Declaration
                         I also declare that I was a member of the Presidency Division Co-operative Credit Society Ltd.,
-                        holding member No............................................and the date of ceasation of my
-                        said previous membership is ..........................................</p>
+                        holding member No <span class="name-text" style="width: 20vw;"><%= appDt.MEMBER_ID %></span> and the date of ceasation of my
+                        said previous membership is <span class="name-text" style="width: 30vw;"></span></p>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tableCustom">
                         <tbody>
                             <tr>
@@ -212,13 +231,98 @@
                 </div>
             </div>
         </div>
-        <div style="text-align: center;">
+        <div style="text-align: center; display: <%= user ? 'block' : 'none' %>;">
 
             <button class="btn btn-primary" type="button" onclick="printDiv();">Print</button>
+            <button class="btn btn-primary" type="button" onclick="downloadPDF();">Download</button>
 
         </div>
 
     </div>
 </body>
+<script src="/plugins/jquery/jquery.min.js"></script>
+<script>
+    function downloadPDF() {
+        // var divToPrint = document.getElementById(divId);
+        // $.ajax({
+        //     method: "POST",
+        //     url: "/download-pdf?encFlag=<%= encFlag %>&id=<%= id %>&flag=<%= flag %>",
+        //     data: { pdfDiv: divToPrint.innerHTML, encFlag:  },
+        //     xhrFields: {
+        //         responseType: 'blob' // Receive response as a binary blob
+        //     },
+        //     beforeSend: function () {
+        //         $(".loader-wrapper").show();
+        //     },
+        //     success: function (data) {
+        //     // Create a Blob URL for the PDF
+        //         const pdfUrl = URL.createObjectURL(data);
+
+        //         // Create an anchor element for downloading the PDF
+        //         const a = document.createElement('a');
+        //         a.href = pdfUrl;
+        //         a.download = `${title}_${new Date().getTime()}.pdf`; // Set the desired filename
+        //         a.style.display = 'none';
+
+        //         // Append the anchor to the document body and trigger a click event
+        //         document.body.appendChild(a);
+        //         a.click();
+
+        //         // Cleanup: Remove the anchor and revoke the Blob URL
+        //         document.body.removeChild(a);
+        //         URL.revokeObjectURL(pdfUrl);
+        //     },
+        //     error: function (xhr, status, error) {
+        //         console.error('Error:', error);
+        //     },
+        //     complete: function () {
+        //         $(".loader-wrapper").hide();
+        //     }
+        // })
+        // console.log('/admin/download-pdf?encFlag=<%= encFlag %>&id=<%= id %>&flag=<%= flag %>');
+
+        // var divToPrint = document.getElementById(divId);
+        $.ajax({
+            method: "GET",
+            url: "/admin/download-pdf",
+            data: { encFlag: '<%= encFlag %>', id: '<%= id %>', flag: '<%= flag %>', bank_id: '<%= user ? user.BANK_ID : 0 %>' },
+            xhrFields: {
+                responseType: 'blob' // Receive response as a binary blob
+            },
+            beforeSend: function () {
+                $(".loader-wrapper").show();
+            },
+            success: function (data) {
+            // Create a Blob URL for the PDF
+                const pdfUrl = URL.createObjectURL(data);
+
+                console.log(pdfUrl);
+                
+
+                // Create an anchor element for downloading the PDF
+                const a = document.createElement('a');
+                a.href = pdfUrl;
+                a.download = `<%= title %>_${new Date().getTime()}.pdf`; // Set the desired filename
+                a.style.display = 'none';
+
+                // Append the anchor to the document body and trigger a click event
+                document.body.appendChild(a);
+                a.click();
+
+                // Cleanup: Remove the anchor and revoke the Blob URL
+                document.body.removeChild(a);
+                URL.revokeObjectURL(pdfUrl);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+            },
+            complete: function () {
+                $(".loader-wrapper").hide();
+            }
+        })
+        
+        // window.location.href = '/admin/download-pdf?';
+    }
+</script>
 
 </html>
