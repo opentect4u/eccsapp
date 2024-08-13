@@ -1,4 +1,5 @@
 const { F_Select } = require('../controller/masterController');
+const { numberToWords } = require('../model/masterModel');
 const appFormRouter = require('express').Router(),
 dateFormat = require('dateformat'),
 puppeteer = require('puppeteer'),
@@ -32,82 +33,72 @@ appFormRouter.get('/application_form', async (req, res, next) => {
 const membershipApplication = async (req, res, flag, encFlag) => {
     var data = req.query
     var user = req.session.user
-    var pax_id = user ? user.BANK_ID : data.bank_id,
-        fields = "*",
-        table_name = `TD_MEMB_APPLICATION`,
-        where = data.id > 0 ? `SL_NO=${data.id}` : null,
-        order = null,
-        dtFlag = data.id > 0 ? 0 : 1;
-    var resDt = await F_Select(pax_id, fields, table_name, where, order, dtFlag)
-    if(data.id > 0){
-        var viewData = {title: "Membership Application Form", flag, encFlag, id: data.id, dateFormat, appDt: resDt.suc > 0 ? resDt.msg : {}}
-        res.render('application/membAppView', viewData)
+    var pax_id = user ? user.BANK_ID : data.bank_id;
+    if(pax_id > 0){
+        var fields = "*",
+            table_name = `TD_MEMB_APPLICATION`,
+            where = data.id > 0 ? `SL_NO=${data.id}` : null,
+            order = null,
+            dtFlag = data.id > 0 ? 0 : 1;
+        var resDt = await F_Select(pax_id, fields, table_name, where, order, dtFlag)
+        if(data.id > 0){
+            var viewData = {title: "Membership Application Form", flag, encFlag, id: data.id, dateFormat, appDt: resDt.suc > 0 ? resDt.msg : {}}
+            res.render('application/membAppView', viewData)
+        }else{
+            var viewData = {heading: "Application Form", sub_heading: "Membership Application Form", dateFormat, flag, encFlag, appDt: resDt.suc > 0 ? resDt.msg : []}
+            res.render('application/view', viewData)
+        }
     }else{
-        var viewData = {heading: "Application Form", sub_heading: "Membership Application Form", dateFormat, flag, encFlag, appDt: resDt.suc > 0 ? resDt.msg : []}
-        res.render('application/view', viewData)
+        res.redirect('/admin/login')
     }
 }
 
 const loanApplication = async (req, res, flag, encFlag) => {
     var data = req.query
     var user = req.session.user
-    var pax_id = user.BANK_ID,
-        fields = "*",
-        table_name = `TD_GEN_LOAN_APPLICATION`,
-        where = data.id > 0 ? `SL_NO=${data.id}` : null,
-        order = null,
-        dtFlag = data.id > 0 ? 0 : 1;
-    var resDt = await F_Select(pax_id, fields, table_name, where, order, dtFlag)
-    if(data.id > 0){
-        var viewData = {title: "General Loan Application Form", dateFormat, appDt: resDt.suc > 0 ? resDt.msg : {}}
-        res.render('application/genLoanView', viewData)
+    var pax_id = user ? user.BANK_ID : data.bank_id;
+    if(pax_id > 0){
+        var fields = "*",
+            table_name = `TD_GEN_LOAN_APPLICATION`,
+            where = data.id > 0 ? `SL_NO=${data.id}` : null,
+            order = null,
+            dtFlag = data.id > 0 ? 0 : 1;
+        var resDt = await F_Select(pax_id, fields, table_name, where, order, dtFlag)
+        if(data.id > 0){
+            var amt_str = resDt.suc > 0 ? (resDt.msg.APPLY_LOAN_AMT ? await numberToWords(resDt.msg.APPLY_LOAN_AMT) : '') : '';
+            var viewData = {title: "General Loan Application Form", flag, encFlag, id: data.id, dateFormat, appDt: resDt.suc > 0 ? resDt.msg : {}, amt_str}
+            res.render('application/genLoanView', viewData)
+        }else{
+            var viewData = {heading: "Application Form", sub_heading: "General Loan Application Form", dateFormat, flag, encFlag, appDt: resDt.suc > 0 ? resDt.msg : []}
+            res.render('application/view', viewData)
+        }
     }else{
-        var viewData = {heading: "Application Form", sub_heading: "General Loan Application Form", dateFormat, flag, encFlag, appDt: resDt.suc > 0 ? resDt.msg : []}
-        res.render('application/view', viewData)
+        res.redirect('/admin/login')
     }
 }
 
 const addShareApplication = async (req, res, flag, encFlag) => {
     var data = req.query
     var user = req.session.user
-    var pax_id = user.BANK_ID,
-        fields = "*",
-        table_name = `TD_ADD_SHARE_APPLICATION`,
-        where = data.id > 0 ? `SL_NO=${data.id}` : null,
-        order = null,
-        dtFlag = data.id > 0 ? 0 : 1;
-    var resDt = await F_Select(pax_id, fields, table_name, where, order, dtFlag)
-    if(data.id > 0){
-        var viewData = {title: "Additional Share Application Form", dateFormat, appDt: resDt.suc > 0 ? resDt.msg : {}}
-        res.render('application/addShareView', viewData)
+    var pax_id = user ? user.BANK_ID : data.bank_id;
+    if(pax_id > 0){
+        var fields = "*",
+            table_name = `TD_ADD_SHARE_APPLICATION`,
+            where = data.id > 0 ? `SL_NO=${data.id}` : null,
+            order = null,
+            dtFlag = data.id > 0 ? 0 : 1;
+        var resDt = await F_Select(pax_id, fields, table_name, where, order, dtFlag)
+        if(data.id > 0){
+            var viewData = {title: "Additional Share Application Form", flag, encFlag, id: data.id, dateFormat, appDt: resDt.suc > 0 ? resDt.msg : {}}
+            res.render('application/addShareView', viewData)
+        }else{
+            var viewData = {heading: "Application Form", sub_heading: "Additional Share Application Form", dateFormat, flag, encFlag, appDt: resDt.suc > 0 ? resDt.msg : []}
+            res.render('application/view', viewData)
+        }
     }else{
-        var viewData = {heading: "Application Form", sub_heading: "Additional Share Application Form", dateFormat, flag, encFlag, appDt: resDt.suc > 0 ? resDt.msg : []}
-        res.render('application/view', viewData)
+        res.redirect('/admin/login')
     }
 }
-
-appFormRouter.get('/dow_pdf', async (req, res) => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    const htmlContent = `
-    <html>
-    <head><title>Test PDF</title></head>
-    <body><h1>Hello, World!</h1></body>
-    </html>
-`;
-
-await page.setContent(htmlContent);
-const pdfBuffer = await page.pdf({ format: 'A4' });
-const filePath = path.join('assets', 'uploads', 'form2.pdf');
-require('fs').writeFileSync(filePath, pdfBuffer);
-
-res.set({
-    'Content-Type': 'application/pdf',
-    'Content-Disposition': 'attachment; filename=form.pdf',
-    'Content-Length': pdfBuffer.length
-});
-res.send(pdfBuffer);
-})
 
 appFormRouter.get('/download-pdf', async (req, res) => {
     try{

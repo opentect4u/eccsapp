@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/dist/css/viewForm.css">
 </head>
 
-<body onload="window.print()">
+<body>
     <div class="wrapper_small">
         <div id="divToPrint">
             <div class="billPrintWrapper">
@@ -27,14 +27,14 @@
                             <tr>
                                 <td class="text_left col_2">
                                     <p>
-                                        Serial No. ................................ <br>
-                                        Date of Receipt ........................ <br>
+                                        Serial No. <span class="name-text" style="width: 15vw;"><%= appDt.SL_NO %></span> <br>
+                                        Date of Receipt <span class="name-text" style="width: 15vw;"><%= dateFormat(appDt.RECEIPT_DT, "dd/mm/yyyy") %></span> <br>
                                         Receiving Official (initial..................)
                                     </p>
                                 </td>
                                 <td class="text_left align_top col_2 border_td">
                                     <p> Order of the Sanctioning authority <br>
-                                        ..................................................... Shares alloted<br>
+                                        <span class="name-text" style="width: 15vw;"><%= appDt.STOCK_ALLOT %></span> Shares alloted<br>
                                         <b>Chairman</b>
                                     </p>
                                 </td>
@@ -46,13 +46,13 @@
                                     Checked and Verified <br>
                                     Declaration regarding No. of <br>
                                     Shares held correct. <br>
-                                    Date of last Purchase...................... <br>
-                                    No. of Shares admissible............... <br>
+                                    Date of last Purchase <span class="name-text" style="width: 15vw;"><%= dateFormat(appDt.ENTRY_DT, "dd/mm/yyyy") %></span> <br>
+                                    No. of Shares admissible <span class="name-text" style="width: 15vw;"><%= appDt.STOCK_HOLD %></span> <br>
                                 </p>
                             </td>
                             <td class="text_left align_top col_2">
                                 <p>Recommended for Sanction. <br>
-                                    ..................................................... Shares only. <br>
+                                    <span class="name-text" style="width: 15vw;"><%= appDt.STOCK_ALLOT %></span> Shares only. <br>
                                     <b>Hony. Secretary</b>
                                 </p>
                             </td>
@@ -84,12 +84,12 @@
 
                 <div class="latter_sec_full">
                     <p>Gentlemen, <br>
-                        I..........................................................................................beg
+                        I <span class="name-text" style="width: 15vw;"><%= appDt.MEM_NAME %></span> beg
                         to state that I am
                         (in block letters)
-                        already a member of the Society of which I hold at present...............................
-                        Shares of Rs. 10/- each. My membership number is...........................................
-                        I now request you to kindly allot me................additional shares of Rs. 10/- each</p>
+                        already a member of the Society of which I hold at present <span class="name-text" style="width: 15vw;"><%= appDt.STOCK_HOLD %></span>
+                        Shares of Rs. 10/- each. My membership number is <span class="name-text" style="width: 15vw;"><%= appDt.MEMBERSHIP_NUMBER %></span>
+                        I now request you to kindly allot me <span class="name-text" style="width: 15vw;"><%= appDt.STOCK_ALLOT %></span> additional shares of Rs. 10/- each</p>
                 </div>
 
 
@@ -130,9 +130,9 @@
                         ii) I beg to state that I have not furnished the name of my nominee in my
                         membership application and that the particulars of my nominee are now
                         furnished below. <br><br>
-                        Name of Nominee............................................... <br> <br>
-                        Precise relationship............................................. <br> <br>
-                        Address............................................................... <br> <br>
+                        Name of Nominee <span class="name-text" style="width: 15vw;"><%= appDt.NOMI_NAME %></span> <br> <br>
+                        Precise relationship <span class="name-text" style="width: 15vw;"><%= appDt.NOMI_RELATION %></span> <br> <br>
+                        Address <span class="name-text" style="width: 15vw;"><%= appDt.ADDR %></span> <br> <br>
 
                         ....................................
                         (Signature) <br> <br></p>
@@ -145,10 +145,57 @@
                 </div>
             </div>
         </div>
-        <div style="text-align: center;">
-            <button class="btn btn-primary" type="button" onclick="printDiv();">Print</button>
+        <div style="text-align: center; display: <%= user ? 'block' : 'none' %>;">
+            <!-- <button class="btn btn-primary" type="button" onclick="printDiv();">Print</button> -->
+            <button class="btn btn-primary" type="button" onclick="downloadPDF();">Download</button>
         </div>
     </div>
 </body>
+
+<script src="/plugins/jquery/jquery.min.js"></script>
+<script>
+    function downloadPDF() {
+        $.ajax({
+            method: "GET",
+            url: "/admin/download-pdf",
+            data: { encFlag: '<%= encFlag %>', id: '<%= id %>', flag: '<%= flag %>', bank_id: '<%= user ? user.BANK_ID : 0 %>' },
+            xhrFields: {
+                responseType: 'blob' // Receive response as a binary blob
+            },
+            beforeSend: function () {
+                $(".loader-wrapper").show();
+            },
+            success: function (data) {
+            // Create a Blob URL for the PDF
+                const pdfUrl = URL.createObjectURL(data);
+
+                console.log(pdfUrl);
+                
+
+                // Create an anchor element for downloading the PDF
+                const a = document.createElement('a');
+                a.href = pdfUrl;
+                a.download = `<%= title %>_${new Date().getTime()}.pdf`; // Set the desired filename
+                a.style.display = 'none';
+
+                // Append the anchor to the document body and trigger a click event
+                document.body.appendChild(a);
+                a.click();
+
+                // Cleanup: Remove the anchor and revoke the Blob URL
+                document.body.removeChild(a);
+                URL.revokeObjectURL(pdfUrl);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+            },
+            complete: function () {
+                $(".loader-wrapper").hide();
+            }
+        })
+        
+        // window.location.href = '/admin/download-pdf?';
+    }
+</script>
 
 </html>
