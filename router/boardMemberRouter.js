@@ -45,7 +45,13 @@ boardMembRouter.post("/board_member_edit", async (req, res) => {
           ? "MEMB_NAME = :0, PHONE_NO = :1, EMAIL_ID = :2, MODIFIED_BY = :3, MODIFIED_DT = :4"
           : "SL_NO, MEMB_NAME, PHONE_NO, EMAIL_ID, CREATED_BY, CREATED_DT, BANK_ID",
       fieldIndex = `((SELECT CASE WHEN MAX(SL_NO) > 0 THEN MAX(SL_NO) ELSE 0 END + 1 FROM MD_BOARD_MEMB), :0, :1, :2, :3, :4, :5)`,
-      values = [
+      values = id > 0 ? [
+        data.memb_name,
+        data.phone_no,
+        data.email_id,
+        user,
+        dateFormat(datetime, "dd-mmm-yy")
+      ] : [
         data.memb_name,
         data.phone_no,
         data.email_id,
