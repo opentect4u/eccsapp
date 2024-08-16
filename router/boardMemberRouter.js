@@ -20,11 +20,11 @@ boardMembRouter.get('/board_member_edit', async (req, res) => {
     var user = req.session.user,
     data = req.query;
     var resDt = {suc: 0}
-    if(data.sl_no > 0){
+    if(data.id > 0){
         var pax_id = user.BANK_ID,
             fields = "*",
             table_name = `MD_BOARD_MEMB`,
-            where = `bank_id=${user.BANK_ID} ${data.sl_no > 0 ? `SL_NO = ${data.sl_no}` : ''}`,
+            where = `bank_id=${user.BANK_ID} ${data.id > 0 ? `AND SL_NO = ${data.id}` : ''}`,
             order = null,
             flag = 0;
         resDt = await F_Select(pax_id, fields, table_name, where, order, flag)

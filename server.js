@@ -63,6 +63,7 @@ const { transRouter } = require('./router/transactionRouter');
 const { appFormRouter } = require('./router/applicationFormRouter');
 const { galleryRouter } = require('./router/galleryRouter');
 const { boardMembRouter } = require('./router/boardMemberRouter');
+const { holidayHomeRouter } = require('./router/holidayHomeRouter');
 // END
 
 
@@ -77,6 +78,7 @@ app.use("/admin", transRouter);
 app.use("/admin", appFormRouter);
 app.use("/admin", galleryRouter);
 app.use("/admin", boardMembRouter);
+app.use("/admin", holidayHomeRouter);
 // app.use('/bccs', bccsApkApiRouter);
 // app.use('/bccs_admin', bccsAdminRouter);
 // END

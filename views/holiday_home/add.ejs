@@ -1,0 +1,229 @@
+<%- include('../template/header'); %>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1><%= heading %></h1>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <% if(message){ %>
+      <div
+        class="alert alert-<%= message.type; %> alert-dismissible fade show"
+        role="alert"
+      >
+        <strong><%= message.message; %></strong>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <% } %>
+      <!-- SELECT2 EXAMPLE -->
+      <div class="card card-default">
+        <div class="card-header">
+          <!-- <h3 class="card-title"><%# sub_heading %></h3> -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+          <form action="/admin/holiday_home_edit" method="post">
+            <div class="row">
+              <div class="col-md-5">
+                <div class="form-group row">
+                  <label for="home_name" class="col-sm-2 col-form-label"
+                    >Name</label
+                  >
+                  <div class="col-sm-10">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="home_name"
+                      name="home_name"
+                      value="<%= res_dt ? res_dt.HOME_NAME : '' %>"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                  <div class="form-group row">
+                    <label for="location" class="col-sm-2 col-form-label"
+                      >Location</label
+                    >
+                    <div class="col-sm-10">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="location"
+                        name="location"
+                        value="<%= res_dt ? res_dt.LOCATION : '' %>"
+                      />
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group row">
+                        <label for="price" class="col-sm-2 col-form-label"
+                            >Price</label
+                        >
+                        <div class="col-sm-10">
+                            <input
+                            type="text"
+                            class="form-control"
+                            id="price"
+                            name="price"
+                            value="<%= res_dt ? res_dt.PRICE : '' %>"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-5">
+                  <div class="form-group row">
+                      <label for="rating" class="col-sm-2 col-form-label"
+                          >Rating</label
+                      >
+                      <div class="col-sm-10">
+                          <input
+                          type="text"
+                          class="form-control"
+                          id="rating"
+                          name="rating"
+                          value="<%= res_dt ? res_dt.RATING : '' %>"
+                          />
+                      </div>
+                  </div>
+              </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-5">
+                <div class="form-group row">
+                    <label for="desc" class="col-sm-2 col-form-label"
+                        >Description</label
+                    >
+                    <div class="col-sm-10">
+                        <input
+                        type="text"
+                        class="form-control"
+                        id="desc"
+                        name="desc"
+                        value="<%= res_dt ? res_dt.DESCRIPTION : '' %>"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-3">
+              <div class="form-group row">
+                  <label for="no_of_bed" class="col-sm-2 col-form-label"
+                      >No. of Beds</label
+                  >
+                  <div class="col-sm-10">
+                      <input
+                      type="text"
+                      class="form-control"
+                      id="no_of_bed"
+                      name="no_of_bed"
+                      value="<%= res_dt ? res_dt.NO_OF_BED : '' %>"
+                      />
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group row">
+                <label for="no_of_bath" class="col-sm-2 col-form-label"
+                    >No. of Bath</label
+                >
+                <div class="col-sm-10">
+                    <input
+                    type="text"
+                    class="form-control"
+                    id="no_of_bath"
+                    name="no_of_bath"
+                    value="<%= res_dt ? res_dt.NO_OF_BATH : '' %>"
+                    />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group row">
+              <label for="no_of_floor" class="col-sm-2 col-form-label"
+                  >No. of Floors</label
+              >
+              <div class="col-sm-10">
+                  <input
+                  type="text"
+                  class="form-control"
+                  id="no_of_floor"
+                  name="no_of_floor"
+                  value="<%= res_dt ? res_dt.NO_OF_FLOORS : '' %>"
+                  />
+              </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-5">
+            <div class="form-group row">
+                <label for="room_size" class="col-sm-2 col-form-label"
+                    >Room Size</label
+                >
+                <div class="col-sm-10">
+                    <input
+                    type="text"
+                    class="form-control"
+                    id="room_size"
+                    name="room_size"
+                    value="<%= res_dt ? res_dt.ROOM_SIZE : '' %>"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+            <input
+              type="hidden"
+              name="sl_no"
+              value="<%= res_dt ? res_dt.SL_NO : 0 %>"
+            />
+            <center>
+              <button
+                type="submit"
+                class="btn btn-outline-success mt-4"
+                id="submit"
+              >
+                Save
+              </button>
+            </center>
+          </form>
+        </div>
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<%- include('../template/footer'); %>
