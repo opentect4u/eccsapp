@@ -1,0 +1,121 @@
+<%- include('../template/header'); %>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1><%= heading %></h1>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <% if(message){ %>
+      <div
+        class="alert alert-<%= message.type; %> alert-dismissible fade show"
+        role="alert"
+      >
+        <strong><%= message.message; %></strong>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <% } %>
+      <!-- SELECT2 EXAMPLE -->
+      <div class="card card-default">
+        <div class="card-header">
+          <!-- <h3 class="card-title"><%# sub_heading %></h3> -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+          <form action="/admin/board_member_edit" method="post">
+            <div class="row">
+              <div class="col-md-5">
+                <div class="form-group row">
+                  <label for="memb_name" class="col-sm-2 col-form-label"
+                    >Name</label
+                  >
+                  <div class="col-sm-10">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="memb_name"
+                      name="memb_name"
+                      value="<%= res_dt ? res_dt.MEMB_NAME : '' %>"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                  <div class="form-group row">
+                    <label for="phone_no" class="col-sm-2 col-form-label"
+                      >Phone Number</label
+                    >
+                    <div class="col-sm-10">
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="phone_no"
+                        name="phone_no"
+                        value="<%= res_dt ? res_dt.PHONE_NO : '' %>"
+                      />
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group row">
+                        <label for="email_id" class="col-sm-2 col-form-label"
+                            >Email</label
+                        >
+                        <div class="col-sm-10">
+                            <input
+                            type="email"
+                            class="form-control"
+                            id="email_id"
+                            name="email_id"
+                            value="<%= res_dt ? res_dt.EMAIL_ID : '' %>"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input
+              type="hidden"
+              name="sl_no"
+              value="<%= res_dt ? res_dt.SL_NO : 0 %>"
+            />
+            <center>
+              <button
+                type="submit"
+                class="btn btn-outline-success mt-4"
+                id="submit"
+              >
+                Save
+              </button>
+            </center>
+          </form>
+        </div>
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<%- include('../template/footer'); %>
