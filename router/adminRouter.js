@@ -157,6 +157,28 @@ adminRouter.post("/calendar_edit", async (req, res) => {
   }
 });
 
+adminRouter.get('/calendar_del', async (req, res) => {
+  var id = req.query.id,
+  user = req.session.user;
+  console.log(id);
+  var resDt = await F_Delete(user.BANK_ID, 'TD_CALENDAR', `SL_NO = '${id}'`);
+  if (resDt.suc > 0) {
+    req.session.message = {
+      type: "success",
+      message: "Successfully Deleted",
+    };
+    res.redirect("/admin/calendar");
+  //   // res_dt = { suc: 1, msg: resDt.msg };
+  } else {
+    // res_dt = { suc: 0, msg: "You have entered a wrong PIN" };
+    req.session.message = {
+      type: "danger",
+      message: "Please try again later!!",
+    };
+    res.redirect("/admin/calendar");
+  }
+})
+
 adminRouter.get("/notification", async (req, res) => {
   var pax_id = db_id,
     fields = "user_cd, user_name, cust_cd",

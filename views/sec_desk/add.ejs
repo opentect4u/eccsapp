@@ -1,0 +1,129 @@
+<%- include('../template/header'); %>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1><%= heading %></h1>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <% if(message){ %>
+      <div
+        class="alert alert-<%= message.type; %> alert-dismissible fade show"
+        role="alert"
+      >
+        <strong><%= message.message; %></strong>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <% } %>
+      <!-- SELECT2 EXAMPLE -->
+      <div class="card card-default">
+        <div class="card-header">
+          <!-- <h3 class="card-title"><%# sub_heading %></h3> -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+          <form action="/admin/sec_desk_edit" method="post">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="narration" class="col-form-label"
+                    >Narration</label
+                  >
+                    <textarea
+                        class="form-control"
+                        id="narration"
+                        name="narration"
+                        rows="3"
+                      ><%= res_dt ? res_dt.NARRATION : '' %></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="pub_flag" class="col-form-label"
+                      >Publish</label
+                    >
+                      <select
+                        name="pub_flag"
+                        id="pub_flag"
+                        class="form-control"
+                        required
+                      >
+                        <option>Select One</option>
+                        <option value="Y" <%= res_dt ? (res_dt.PUBLISH_FLAG == 'Y' ? 'selected' : '') : '' %>>Publish</option>
+                        <option value="N" <%= res_dt ? (res_dt.PUBLISH_FLAG == 'N' ? 'selected' : '') : '' %>>Hide</option>
+                      </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                      <label for="pub_st_dt" class="col-form-label"
+                          >Start Date</label
+                      >
+                          <input
+                          type="date"
+                          class="form-control"
+                          id="pub_st_dt"
+                          name="pub_st_dt"
+                          value="<%= res_dt ? res_dt.PUBLISH_START_DT : '' %>"
+                          />
+                  </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pub_end_dt" class="col-form-label"
+                        >End Date</label
+                    >
+                        <input
+                        type="date"
+                        class="form-control"
+                        id="pub_end_dt"
+                        name="pub_end_dt"
+                        value="<%= res_dt ? res_dt.PUBLISH_END_DT : '' %>"
+                        />
+                </div>
+              </div>
+            </div>
+            <input
+              type="hidden"
+              name="sl_no"
+              value="<%= res_dt ? res_dt.SL_NO : 0 %>"
+            />
+            <center>
+              <button
+                type="submit"
+                class="btn btn-outline-success mt-4"
+                id="submit"
+              >
+                Save
+              </button>
+            </center>
+          </form>
+        </div>
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<%- include('../template/footer'); %>

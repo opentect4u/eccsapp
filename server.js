@@ -64,6 +64,7 @@ const { appFormRouter } = require('./router/applicationFormRouter');
 const { galleryRouter } = require('./router/galleryRouter');
 const { boardMembRouter } = require('./router/boardMemberRouter');
 const { holidayHomeRouter } = require('./router/holidayHomeRouter');
+const {SecDeskRouter} = require('./router/secDeskRouter')
 // END
 
 
@@ -79,6 +80,7 @@ app.use("/admin", appFormRouter);
 app.use("/admin", galleryRouter);
 app.use("/admin", boardMembRouter);
 app.use("/admin", holidayHomeRouter);
+app.use("/admin", SecDeskRouter);
 // app.use('/bccs', bccsApkApiRouter);
 // app.use('/bccs_admin', bccsAdminRouter);
 // END
@@ -91,6 +93,110 @@ app.get('/', (req, res) => {
   // var password = bcrypt.hashSync('3118', 10);
   // console.log(password);
   //   res.send('Helow World1');
+})
+
+app.get('/test', (req, res) => {
+  var raw_data = {
+    "Block": {
+      "Name": "NANDIGRAM-I",
+      "Year": [
+        {
+          "period": "2019",
+          "Party": [
+            {
+              "PartyName": "BJP",
+              "Value": {
+                "Booth": "25",
+                "Percentage": "0.26"
+              }
+            },
+            {
+              "PartyName": "TMC",
+              "Value": {
+                "Booth": "191",
+                "Percentage": "0.66"
+              }
+            },
+            {
+              "PartyName": "Other",
+              "Value": {
+                "Booth": "0",
+                "Percentage": "0.01"
+              }
+            },
+            {
+              "PartyName": "Left",
+              "Value": {
+                "Booth": "0",
+                "Percentage": "0.04"
+              }
+            }
+          ]
+        },
+        {
+          "period": "2021",
+          "Party": [
+            {
+              "PartyName": "TMC",
+              "Value": {
+                "Booth": "86",
+                "Percentage": "0.50"
+              }
+            },
+            {
+              "PartyName": "Other",
+              "Value": {
+                "Booth": "0",
+                "Percentage": "0.01"
+              }
+            },
+            {
+              "PartyName": "Left",
+              "Value": {
+                "Booth": "1",
+                "Percentage": "0.02"
+              }
+            },
+            {
+              "PartyName": "BJP",
+              "Value": {
+                "Booth": "134",
+                "Percentage": "0.47"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+  var req_dt = req.query
+  var year = req_dt.year.split(','), party = req_dt.party.split(',');
+  var newArr = [], pr_arr = []
+  var data = raw_data.Block.Year
+  var i = 0
+  for(let yr of year){
+    pr_arr.length = 0
+    var year_filter_data = data.filter(dt => dt.period == yr)
+    newArr.push(year_filter_data[0])
+    // // console.log(year_filter_data, 'qweqee');
+    // // var filterData = data.filter(dt => dt.period == yr)
+    // // filterData[0].Party.length = 0
+    // // newArr.push(filterData[0])
+    // // console.log(year_filter_data, 'WWWWW');
+    // for(let py of party){
+      
+    //   var party_arr = year_filter_data[0].Party.filter(dt => dt.PartyName == py)
+    //   console.log(party_arr, 'HERE');
+      
+    //   pr_arr.push(party_arr[0])
+    // }
+    // newArr[i].Party.length = 0
+    // newArr[i].Party.push(pr_arr)
+    // i++
+  }
+  console.log(newArr);
+  
+  res.send({raw_data, year, party, newArr})
 })
 
 // https.createServer(options, function (req, res) {
