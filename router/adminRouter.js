@@ -197,31 +197,67 @@ adminRouter.get("/notification", async (req, res) => {
 adminRouter.post("/notification", async (req, res) => {
   var data = req.body;
   var datetime = dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss"),
-    user = req.session.user.USER_NAME;
-  var pax_id = db_id,
-    table_name = "TD_NOTIFICATION",
-    fields = "SL_NO, NARRATION, SEND_USER_ID, CREATED_BY, CREATED_DT",
-    fieldIndex = `((SELECT Nvl(MAX(SL_NO),0)+1 FROM TD_NOTIFICATION), :0, :1, :2, :3)`,
-    values = [
-      data.narration,
-      data.user_id,
-      user,
-      dateFormat(datetime, "dd-mmm-yy"),
-    ],
-    where = null,
-    flag = 0;
-  var resDt = await Api_Insert(
-    pax_id,
-    table_name,
-    fields,
-    fieldIndex,
-    values,
-    where,
-    flag
-  );
-  console.log(resDt.suc);
+    user = req.session.user.USER_NAME, resDt = {}, bank_id = req.session.user.BANK_ID;
+  if(data.user_id != 'all' && data.user_id != ''){
+    var pax_id = bank_id,
+      table_name = "TD_NOTIFICATION",
+      fields = "SL_NO, NARRATION, SEND_USER_ID, CREATED_BY, CREATED_DT",
+      fieldIndex = `((SELECT Nvl(MAX(SL_NO),0)+1 FROM TD_NOTIFICATION), :0, :1, :2, :3)`,
+      values = [
+        data.narration,
+        data.user_id,
+        user,
+        dateFormat(datetime, "dd-mmm-yy"),
+      ],
+      where = null,
+      flag = 0;
+    resDt = await Api_Insert(
+      pax_id,
+      table_name,
+      fields,
+      fieldIndex,
+      values,
+      where,
+      flag
+    );
+  }
+
+  if(data.user_id == 'all'){
+    var pax_id = bank_id,
+    fields = "user_cd, user_name, cust_cd",
+    table_name = "md_user",
+    where = `user_type != 'A' AND bank_id = ${bank_id}`,
+    order = null,
+    flag = 1;
+    var userDt = await F_Select(pax_id, fields, table_name, where, order, flag);
+    if(userDt.suc > 0 && userDt.msg.length > 0){
+      for(let udt of userDt.msg){
+        var table_name = "TD_NOTIFICATION",
+          fields = "SL_NO, NARRATION, SEND_USER_ID, CREATED_BY, CREATED_DT",
+          fieldIndex = `((SELECT Nvl(MAX(SL_NO),0)+1 FROM TD_NOTIFICATION), :0, :1, :2, :3)`,
+          values = [
+            data.narration,
+            udt.USER_CD,
+            user,
+            dateFormat(datetime, "dd-mmm-yy"),
+          ],
+          where = null,
+          flag = 0;
+        resDt = await Api_Insert(
+          pax_id,
+          table_name,
+          fields,
+          fieldIndex,
+          values,
+          where,
+          flag
+        );
+      }
+    }
+  }
+  // console.log(resDt.suc);
   if (resDt.suc > 0) {
-    var ioDt = await SendNotification();
+    var ioDt = await SendNotification({bank_id: bank_id});
     req.io.emit('notification', ioDt);
     req.session.message = {
       type: "success",

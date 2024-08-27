@@ -247,7 +247,7 @@ appApiRouter.post("/login", async (req, res) => {
   // console.log({chk: chkuser.msg.CHKACC});
   if(chkuser.suc > 0 && chkuser.msg.CHKACC > 0 || userId == '9051203118' || userId == '9831887194' || userId == '9748767314'){
   var pax_id = db_id,
-    fields = `user_cd, mpin, last_login, active_status, initcap(user_name)user_name, cust_cd, img_path, 'PDPECCS' BANK_NAME, 'A' VIEW_FLAG`,
+    fields = `user_cd, mpin, last_login, active_status, initcap(user_name)user_name, cust_cd, img_path, 'PDPECCS' BANK_NAME, bank_id, 'A' VIEW_FLAG`,
     table_name = "md_user",
     where = `user_cd ='${userId}'`,
     order = null,
@@ -975,6 +975,18 @@ appApiRouter.post('/get_about_dtls', async (req, res) => {
     fields = "*",
     table_name = `md_about`,
     where = `bank_id=${data.bank_id} AND type = '${data.type}' ${data.sl_no > 0 ? `AND SL_NO=${data.sl_no}` : ''}`,
+    order = null,
+    flag = 0;
+  var resDt = await F_Select(pax_id, fields, table_name, where, order, flag)
+  res.send(resDt);
+})
+
+appApiRouter.post('/get_sec_desc', async (req, res) => {
+  var data = req.body
+  var pax_id = db_id,
+    fields = "*",
+    table_name = `TD_SEC_DESK`,
+    where = `bank_id=${data.bank_id} ${data.sl_no > 0 ? `AND SL_NO=${data.sl_no}` : ''}`,
     order = null,
     flag = 0;
   var resDt = await F_Select(pax_id, fields, table_name, where, order, flag)

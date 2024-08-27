@@ -211,8 +211,8 @@ const Api_Insert = (pax_id, table_name, fields, fieldIndex, values, where, flag)
     })
 }
 
-const SendNotification = () => {
-    var pax_id = 1,
+const SendNotification = (data) => {
+    var pax_id = data.bank_id,
         flag = 1;
     return new Promise(async (resolve, reject) => {
         try{
@@ -223,7 +223,7 @@ const SendNotification = () => {
             // END
             try{
                 // SQL QUERY
-                let sql = `SELECT SL_NO, NARRATION, SEND_USER_ID, VIEW_FLAG, CREATED_DT FROM td_notification order by sl_no desc`
+                let sql = `SELECT SL_NO, NARRATION, SEND_USER_ID, VIEW_FLAG, CREATED_DT FROM td_notification WHERE bank_id = ${pax_id} order by sl_no desc`
                 console.log(sql);
                 // EXICUTE QUERY
                 const result = await con.execute(sql, [], {
@@ -247,6 +247,8 @@ const SendNotification = () => {
                 await pool.close();
                 // END
                 data = flag > 0 ? (data.length > 0 ? { suc: 1, msg: data } : { suc: 0, msg: 'No Data Found' }) : (data ? { suc: 1, msg: data } : { suc: 0, msg: 'No Data Found' })
+                console.log(data);
+                
                 resolve(data);
             }catch(err){
                 await con.close();
@@ -299,7 +301,9 @@ const Notification_cnt = () => {
 
 const UpdateNotification = (data) => {
     return new Promise(async (resolve, reject) => {
-        var pax_id = 5;
+        console.log(data, typeof(data), data.bank_id);
+        
+        var pax_id = data.bank_id;
         const pool = await oracledb.createPool(db_details[pax_id]);
         const con = await pool.getConnection();
 

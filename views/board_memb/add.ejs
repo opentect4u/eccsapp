@@ -1,121 +1,126 @@
 <%- include('../template/header'); %>
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-  <!-- Content Header (Page header) -->
-  <section class="content-header">
-    <div class="container-fluid">
-      <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1><%= heading %></h1>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>
+              <%= heading %>
+            </h1>
+          </div>
         </div>
       </div>
-    </div>
-    <!-- /.container-fluid -->
-  </section>
+      <!-- /.container-fluid -->
+    </section>
 
-  <!-- Main content -->
-  <section class="content">
-    <div class="container-fluid">
-      <% if(message){ %>
-      <div
-        class="alert alert-<%= message.type; %> alert-dismissible fade show"
-        role="alert"
-      >
-        <strong><%= message.message; %></strong>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="alert"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <% } %>
-      <!-- SELECT2 EXAMPLE -->
-      <div class="card card-default">
-        <div class="card-header">
-          <!-- <h3 class="card-title"><%# sub_heading %></h3> -->
-        </div>
-        <!-- /.card-header -->
-        <div class="card-body">
-          <form action="/admin/board_member_edit" method="post">
-            <div class="row">
-              <div class="col-md-5">
-                <div class="form-group row">
-                  <label for="memb_name" class="col-sm-2 col-form-label"
-                    >Name</label
-                  >
-                  <div class="col-sm-10">
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="memb_name"
-                      name="memb_name"
-                      value="<%= res_dt ? res_dt.MEMB_NAME : '' %>"
-                    />
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <% if(message){ %>
+          <div class="alert alert-<%= message.type; %> alert-dismissible fade show" role="alert">
+            <strong>
+              <%= message.message; %>
+            </strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <% } %>
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-default">
+              <div class="card-header">
+                <!-- <h3 class="card-title"><%# sub_heading %></h3> -->
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <form action="/admin/board_member_edit" enctype="multipart/form-data" method="post">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="memb_name" class="col-form-label">Name</label>
+                        <input type="text" class="form-control" id="memb_name" name="memb_name"
+                          value="<%= res_dt ? res_dt.MEMB_NAME : '' %>" />
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="desig" class="col-form-label">Designation</label>
+                        <input type="text" class="form-control" id="desig" name="desig"
+                          value="<%= res_dt ? res_dt.DESIG : '' %>" />
+                      </div>
+                    </div>
                   </div>
-                </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="phone_no" class="col-form-label">Phone Number</label>
+                        <input type="number" class="form-control" id="phone_no" name="phone_no"
+                          value="<%= res_dt ? res_dt.PHONE_NO : '' %>" />
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="email_id" class="col-form-label">Email</label>
+                        <input type="email" class="form-control" id="email_id" name="email_id"
+                          value="<%= res_dt ? res_dt.EMAIL_ID : '' %>" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="off_addr" class="col-form-label">Office Address</label>
+                        <textarea name="off_addr" id="off_addr" class="form-control" aria-label="With textarea"><%= res_dt ? res_dt.OFFICE_ADDRESS : '' %></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="about" class="col-form-label">About</label>
+                        <textarea name="about" id="about" class="form-control" aria-label="With textarea"><%= res_dt ? res_dt.ABOUT : '' %></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="narration">Upload</label>
+                        <input type="file" name="img" id="img" accept="image/*">
+                      </div>
+                    </div>
+                    <div class="col-md-3" id="img-div" style="display: none;">
+                      <img id="pro_img" height="100%" width="100%" src="#" alt="Selected Image" />
+                    </div>
+                  </div>
+                  <input type="hidden" name="sl_no" value="<%= res_dt ? res_dt.SL_NO : 0 %>" />
+                  <center>
+                    <button type="submit" class="btn btn-outline-success mt-4" id="submit">
+                      Save
+                    </button>
+                  </center>
+                </form>
               </div>
             </div>
-            <div class="row">
-                <div class="col-md-5">
-                  <div class="form-group row">
-                    <label for="phone_no" class="col-sm-2 col-form-label"
-                      >Phone Number</label
-                    >
-                    <div class="col-sm-10">
-                      <input
-                        type="number"
-                        class="form-control"
-                        id="phone_no"
-                        name="phone_no"
-                        value="<%= res_dt ? res_dt.PHONE_NO : '' %>"
-                      />
-                    </div>
-                  </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="form-group row">
-                        <label for="email_id" class="col-sm-2 col-form-label"
-                            >Email</label
-                        >
-                        <div class="col-sm-10">
-                            <input
-                            type="email"
-                            class="form-control"
-                            id="email_id"
-                            name="email_id"
-                            value="<%= res_dt ? res_dt.EMAIL_ID : '' %>"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <input
-              type="hidden"
-              name="sl_no"
-              value="<%= res_dt ? res_dt.SL_NO : 0 %>"
-            />
-            <center>
-              <button
-                type="submit"
-                class="btn btn-outline-success mt-4"
-                id="submit"
-              >
-                Save
-              </button>
-            </center>
-          </form>
-        </div>
+            <!-- /.card -->
       </div>
-      <!-- /.card -->
-    </div>
-    <!-- /.container-fluid -->
-  </section>
-  <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
-<%- include('../template/footer'); %>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <%- include('../template/footer'); %>
+
+  <script>
+    $('#img').on('change', function(e){
+      const [file] = e.target.files
+      if (file) {
+        $('#img-div').show()
+        $('#pro_img').attr('src', URL.createObjectURL(file))
+      }else{
+        $('#img-div').hide()
+      }
+    })
+  </script>

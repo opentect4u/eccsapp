@@ -1,6 +1,6 @@
 const express = require('express'),
 app = express(),
-port = process.env.PORT || 3012,
+port = process.env.PORT || 3011,
 http = require('http'),
 socketIO = require('socket.io'),
 // https = require('https'),
@@ -214,7 +214,7 @@ io.on('connection', async function (socket) {
     console.log(`Connected succesfully to the socket ... ${socket.id}`);
     socket.on('notification', async (data) => {
       console.log(socket.id + ' in notification');
-      var res_dt = await SendNotification();
+      var res_dt = await SendNotification(data);
       socket.emit('notification', res_dt);
     })
 	socket.on('notification_cnt', async (data) => {
@@ -226,7 +226,7 @@ io.on('connection', async function (socket) {
 	socket.on('redu_noti_cnt', async (data) => {
     //  console.log(socket.id + ' in notification');
       var res_dt = await UpdateNotification(data);
-		 var res_dt_send = await SendNotification();
+		 var res_dt_send = await SendNotification(data);
       socket.emit('notification', res_dt_send);
 		// var res_dt = data;
       socket.emit('redu_noti_cnt', res_dt);
