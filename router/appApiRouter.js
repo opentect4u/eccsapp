@@ -762,6 +762,15 @@ appApiRouter.post('/get_memb_application', async (req, res) => {
 appApiRouter.post('/memb_application_save', async (req, res) => {
   var data = req.body;
   var datetime = dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss");
+
+  var pax_id = db_id,
+    fields = "Decode(MAX(SL_NO),1,MAX(SL_NO),0)+1 as last_id",
+    table_name = `td_memb_application`,
+    where = null,
+    order = null,
+    flag = 1;
+  var last_id = await F_Select(pax_id, fields, table_name, where, order, flag)
+
   var pax_id = db_id,
     table_name = "td_memb_application",
     fields = data.sl_no > 0 ? `MEM_NAME = :3, DOB = :4, CO_NAME = :5, ISSUED_BY = :6, MEMO_NO = :7, MEMO_DT = :8, TOT_SHARE = :9, NOMI_NAME = :10, NOMI_RELATION = :11, NOMI_ADDR = :12, NOMI_AGE = :13, OFFICE_NAME = :14, DESIGNATION = :15, DEP_ENTRY_DT = :16, MON_SUB_PAY = :17, LAST_INC_DT = :18, PER_ADDR = :19, LOCAL_ADDR = :20, MODIFIED_BY = :21, MODIFIED_DT = :22` : `SL_NO, MEMBER_ID, ENTRY_DT, RECEIPT_DT, MEM_NAME, DOB, CO_NAME, ISSUED_BY, MEMO_NO, MEMO_DT, TOT_SHARE, NOMI_NAME, NOMI_RELATION, NOMI_ADDR, NOMI_AGE, OFFICE_NAME, DESIGNATION, DEP_ENTRY_DT, MON_SUB_PAY, LAST_INC_DT, PER_ADDR, LOCAL_ADDR, CREATED_BY, CREATED_DT`,
@@ -791,8 +800,8 @@ appApiRouter.post('/memb_application_save', async (req, res) => {
       data.user,
       dateFormat(datetime, "dd-mmm-yy"),
     ],
-    where = data.id > 0 ? `sl_no = '${data.sl_no}'` : null,
-    flag = data.id > 0 ? 1 : 0;
+    where = data.sl_no > 0 ? `sl_no = '${data.sl_no}'` : null,
+    flag = data.sl_no > 0 ? 1 : 0;
     
   var resDt = await Api_Insert(
     pax_id,
@@ -803,6 +812,9 @@ appApiRouter.post('/memb_application_save', async (req, res) => {
     where,
     flag
   );
+
+  var sl_no = data.sl_no > 0 ? data.sl_no : resDt
+
   res.send(resDt);
 })
 
