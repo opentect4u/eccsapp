@@ -3,7 +3,8 @@ const express = require('express'),
   dateFormat = require('dateformat'),
   bcrypt = require("bcrypt"),
   fs = require('fs'),
-  upload = require('express-fileupload');
+  upload = require('express-fileupload'),
+  puppeteer = require('puppeteer');
 
 const request = require('request');
 
@@ -634,7 +635,7 @@ appApiRouter.post('/loan_emi_calculator', async (req, res) => {
      intt_rate = data.intt_rate,
 	  period = data.period,
 	  intt_type = data.intt_type;
-	 var pax_id = db_id;
+	 var pax_id = 2;
 		var	pro_query = `DECLARE LD_PRN_AMT NUMBER; LD_INTT_RT NUMBER; LD_NO_INSTL NUMBER; LD_EMI_FORMULA NUMBER; BEGIN LD_PRN_AMT := ${prn_amt};LD_INTT_RT := '${intt_rate}';LD_NO_INSTL := '${period}';LD_EMI_FORMULA := '${intt_type}';P_EMI_DISPLAY(LD_PRN_AMT => LD_PRN_AMT,LD_INTT_RT => LD_INTT_RT,LD_NO_INSTL => LD_NO_INSTL,LD_EMI_FORMULA => LD_EMI_FORMULA); END;`;
 		var	table_name = 'TT_EMI_DISPLAY',
 			fields = 'EMI_NO,ROUND(EMI_PRN) as EMI_PRN,ROUND(EMI_INTT) as EMI_INTT,ROUND(TOTAL_EMI) as TOTAL_EMI',
@@ -1003,6 +1004,63 @@ appApiRouter.post('/get_sec_desc', async (req, res) => {
     flag = 0;
   var resDt = await F_Select(pax_id, fields, table_name, where, order, flag)
   res.send(resDt);
+})
+
+appApiRouter.post('/get_memb_dtls', async (req, res) => {
+  var data = req.body
+  var pax_id = db_id,
+    fields = "*",
+    table_name = `MM_MEMBER`,
+    where = `member_id=${data.memb_id}`,
+    order = null,
+    flag = 0;
+  var resDt = await F_Select(pax_id, fields, table_name, where, order, flag)
+  res.send(resDt);
+})
+
+appApiRouter.post('/gen_pdf', async (req, res) => {
+  
+  try{
+    var data = req.body
+    console.log(data);
+    
+    const browser = await puppeteer.launch({headless: 'new'});
+    const page = await browser.newPage();
+  
+    var incFlag = Buffer.from(data.flag).toString('base64')
+
+    // Replace with your form page URL or HTML content
+
+    await page.goto(`${process.env.BASE_URL}/admin/application_form?flag=${incFlag}&id=${data.id}&bank_id=${data.bank_id}`, { waitUntil: 'networkidle0' });
+
+    // Generate PDF
+    const pdfBuffer = await page.pdf({ 
+        format: 'A4',
+        printBackground: true,
+        margin: { top: "20px", bottom: "20px", left: "20px", right: "20px" }
+     });
+
+    await browser.close();
+
+    // Define file path to save PDF on the server (optional)
+    // const filePath = path.join('assets', 'uploads', 'form1.pdf');
+    // require('fs').writeFileSync(filePath, pdfBuffer);
+
+    // console.log(pdfBuffer);
+    
+
+    res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename="form.pdf"',
+        'Content-Length': pdfBuffer.length
+    });
+
+    // Send the PDF buffer as a binary response
+    res.end(pdfBuffer, 'binary');
+  }catch(err){
+      console.log(err);
+      res.send(err)
+  }
 })
 
 module.exports = { appApiRouter, chkUser };
