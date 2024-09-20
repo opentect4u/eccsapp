@@ -1,6 +1,6 @@
 const SecDeskRouter = require('express').Router()
 const { ABOUT_TYPE_LIST } = require('../model/masterModel')
-const {F_Select, Api_Insert, saveAboutSection} = require('../controller/masterController'),
+const {F_Select, Api_Insert, saveAboutSection, F_Delete} = require('../controller/masterController'),
 dateFormat = require('dateformat'),
 oracledb = require("oracledb");
 
@@ -31,7 +31,7 @@ SecDeskRouter.get('/sec_desk_edit', async (req, res) => {
             flag = 0;
         resDt = await F_Select(pax_id, fields, table_name, where, order, flag)
     }
-    var viewData = {heading: "Holiday Home", res_dt: resDt.suc > 0 ? resDt.msg : null}
+    var viewData = {heading: "Secretary's Desk", res_dt: resDt.suc > 0 ? resDt.msg : null}
     res.render('sec_desk/add', viewData)
 })
 
