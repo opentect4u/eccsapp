@@ -32,7 +32,7 @@ app.set("view engine", "ejs");
 
 app.use(
   session({
-    secret: "PDPECCS",
+    secret: "PDPCCS",
     resave: false,
     saveUninitialized: false,
     cookie: {

@@ -248,7 +248,7 @@ appApiRouter.post("/login", async (req, res) => {
   // console.log({chk: chkuser.msg.CHKACC});
   if(chkuser.suc > 0 && chkuser.msg.CHKACC > 0 || userId == '9051203118' || userId == '9831887194' || userId == '9748767314'){
   var pax_id = db_id,
-    fields = `user_cd, mpin, last_login, active_status, initcap(user_name)user_name, cust_cd, img_path, 'PDPECCS' BANK_NAME, bank_id, 'A' VIEW_FLAG`,
+    fields = `user_cd, mpin, last_login, active_status, initcap(user_name)user_name, cust_cd, img_path, 'PDPCCS' BANK_NAME, bank_id, 'A' VIEW_FLAG`,
     table_name = "md_user",
     where = `user_cd ='${userId}'`,
     order = null,
