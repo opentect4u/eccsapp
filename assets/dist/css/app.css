@@ -134,7 +134,7 @@
     border-bottom: none;
     padding-left: 40px;
     padding-right: 40px;
-    padding-top: 60px;
+    padding-top: 10px;
 }
 
 h3.loginTitle {
@@ -164,7 +164,7 @@ body.login-page {
 .card_bodyCustom {
     padding-left: 25px;
     padding-right: 25px;
-    padding-bottom: 60px;
+    padding-bottom: 10px;
 }
 
 a.helpLink {
