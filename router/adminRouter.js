@@ -15,7 +15,7 @@ adminRouter.use((req, res, next) => {
   var user = req.session.user;
   console.log(url);
   
-  if (url == "/login" || url == '/application_form' || user) {
+  if (url == "/login" || url == '/application_form' || url == '/privacy' || user) {
     next();
   } else {
     res.redirect("/admin/login");
@@ -527,6 +527,10 @@ adminRouter.get('/user_delete', async (req, res) => {
     };
     res.redirect("/admin/user_list");
   }
+})
+
+adminRouter.get('/privacy', (req, res) => {
+  res.render('admin/privecy')
 })
 
 module.exports = { adminRouter };

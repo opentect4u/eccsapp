@@ -737,10 +737,10 @@ appApiRouter.post('/get_demand_dtls', async (req, res) => {
   var data = req.body
   var pax_id = db_id,
     fields = "a.member_id, a.member_name, a.month, a.year, a.acc_type_cd, b.acc_type_desc, a.acc_num, a.prn_amt, a.intt_amt",
-    table_name = `tm_recovery_dtls a, mm_acc_type b`,
+    table_name = `tm_demand_view a, mm_acc_type b`,
     where = `a.acc_type_cd=b.acc_type_cd and a.member_id = ${data.memb_id}
-    and a.month = (select max(c.month) from tm_recovery_dtls c where c.member_id = a.member_id and c.year = (select MAX(d.year) from tm_recovery_dtls d where d.member_id=a.member_id))
-    and a.year = (select MAX(d.year) from tm_recovery_dtls d where d.member_id=a.member_id)
+    and a.month = (select max(c.month) from tm_demand_view c where c.member_id = a.member_id and c.year = (select MAX(d.year) from tm_demand_view d where d.member_id=a.member_id))
+    and a.year = (select MAX(d.year) from tm_demand_view d where d.member_id=a.member_id)
     and (a.prn_amt > 0 or a.intt_amt > 0)`,
     order = 'order by a.acc_type_cd',
     flag = 1;
@@ -765,7 +765,7 @@ appApiRouter.post('/memb_application_save', async (req, res) => {
   var datetime = dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss");
 
   var pax_id = db_id,
-    fields = "Decode(MAX(SL_NO),1,MAX(SL_NO),0)+1 as last_id",
+    fields = "NVL(MAX(SL_NO), 0) + 1 as last_id",
     table_name = `td_memb_application`,
     where = null,
     order = null,
@@ -775,7 +775,7 @@ appApiRouter.post('/memb_application_save', async (req, res) => {
   var pax_id = db_id,
     table_name = "td_memb_application",
     fields = data.sl_no > 0 ? `MEM_NAME = :3, DOB = :4, CO_NAME = :5, ISSUED_BY = :6, MEMO_NO = :7, MEMO_DT = :8, TOT_SHARE = :9, NOMI_NAME = :10, NOMI_RELATION = :11, NOMI_ADDR = :12, NOMI_AGE = :13, OFFICE_NAME = :14, DESIGNATION = :15, DEP_ENTRY_DT = :16, MON_SUB_PAY = :17, LAST_INC_DT = :18, PER_ADDR = :19, LOCAL_ADDR = :20, MODIFIED_BY = :21, MODIFIED_DT = :22` : `SL_NO, MEMBER_ID, ENTRY_DT, RECEIPT_DT, MEM_NAME, DOB, CO_NAME, ISSUED_BY, MEMO_NO, MEMO_DT, TOT_SHARE, NOMI_NAME, NOMI_RELATION, NOMI_ADDR, NOMI_AGE, OFFICE_NAME, DESIGNATION, DEP_ENTRY_DT, MON_SUB_PAY, LAST_INC_DT, PER_ADDR, LOCAL_ADDR, CREATED_BY, CREATED_DT`,
-    fieldIndex = `((SELECT Decode(MAX(SL_NO),1,MAX(SL_NO),0)+1 FROM td_memb_application), :0, :1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18, :19, :20, :21, :22)`,
+    fieldIndex = `((SELECT NVL(MAX(SL_NO), 0) + 1 FROM td_memb_application), :0, :1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18, :19, :20, :21, :22)`,
     values = [
       data.memb_id,
       dateFormat(datetime, "dd-mmm-yy"),
@@ -837,7 +837,7 @@ appApiRouter.post('/add_share_application_save', async (req, res) => {
   var pax_id = db_id,
     table_name = "TD_ADD_SHARE_APPLICATION",
     fields = data.sl_no > 0 ? `MEM_NAME = :3, STOCK_HOLD = :4, STOCK_ALLOT = :5, MEMBERSHIP_NUMBER = :6, NOMI_NAME = :7, NOMI_RELATION = :8, ADDR = :9, OFFICE_NAME = :10, DESIGNATION = :11, MODIFIED_BY = :12, MODIFIED_DT = :13` : `SL_NO, MEMBER_ID, ENTRY_DT, RECEIPT_DATE, MEM_NAME, STOCK_HOLD, STOCK_ALLOT, MEMBERSHIP_NUMBER, NOMI_NAME, NOMI_RELATION, ADDR, OFFICE_NAME, DESIGNATION, CREATED_BY, CREATED_DT`,
-    fieldIndex = `((SELECT Decode(MAX(SL_NO),1,MAX(SL_NO),0)+1 FROM TD_ADD_SHARE_APPLICATION), :0, :1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13)`,
+    fieldIndex = `((SELECT NVL(MAX(SL_NO), 0) + 1 FROM TD_ADD_SHARE_APPLICATION), :0, :1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13)`,
     values = [
       data.memb_id,
       dateFormat(datetime, "dd-mmm-yy"),
@@ -866,7 +866,7 @@ appApiRouter.post('/add_share_application_save', async (req, res) => {
     where,
     flag
   );
-  res.send(resDt);
+  res.send({suc: resDt.suc, msg: resDt.suc > 0 ? resDt.msg : 'Data not inserted.'});
 })
 
 appApiRouter.post('/get_loan_application', async (req, res) => {
@@ -887,7 +887,7 @@ appApiRouter.post('/add_loan_application_save', async (req, res) => {
   var pax_id = db_id,
     table_name = "TD_GEN_LOAN_APPLICATION",
     fields = data.sl_no > 0 ? `MEM_NAME = :3, MEMBERSHIP_NUMBER = :4, DOB = :5, MOBILE_NO = :6, SHARE_VALUE = :7, BASIC_PAY = :8, LAST_LOAN_AMT = :9, OLD_GEN_LOAN_BAL = :10, DEFAULTER = :11, RECOV_BNG_ASU = :12, LAST_INC_DT = :13, RATE_OF_INC = :14, NATURE_OF_SURITY = :15, PER_ADDR = :16, LOCAL_ADDR = :17, OFFICE_NAME = :18, DESIGNATION = :19, SAL_BILL_NO = :20, PART = :21, DEPT = :22, APPLY_LOAN_AMT = :23, REPAID_DT = :24, PURPOSE = :25, MODIFIED_BY = :26, MODIFIED_DT = :27` : `SL_NO, MEMBER_ID, ENTRY_DT, RECEIPT_DATE, MEM_NAME, MEMBERSHIP_NUMBER, DOB, MOBILE_NO, SHARE_VALUE, BASIC_PAY, LAST_LOAN_AMT, OLD_GEN_LOAN_BAL, DEFAULTER, RECOV_BNG_ASU, LAST_INC_DT, RATE_OF_INC, NATURE_OF_SURITY, PER_ADDR, LOCAL_ADDR, OFFICE_NAME, DESIGNATION, SAL_BILL_NO, PART, DEPT, APPLY_LOAN_AMT, REPAID_DT, PURPOSE, CREATED_BY, CREATED_DT`,
-    fieldIndex = `((SELECT Decode(MAX(SL_NO),1,MAX(SL_NO),0)+1 FROM TD_GEN_LOAN_APPLICATION), :0, :1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18, :19, :20, :21, :22, :23, :24, :25, :26, :27)`,
+    fieldIndex = `((SELECT NVL(MAX(SL_NO), 0) + 1 FROM TD_GEN_LOAN_APPLICATION), :0, :1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18, :19, :20, :21, :22, :23, :24, :25, :26, :27)`,
     values = [
       data.memb_id,
       dateFormat(datetime, "dd-mmm-yy"),

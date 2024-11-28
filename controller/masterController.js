@@ -223,7 +223,7 @@ const SendNotification = (data) => {
             // END
             try{
                 // SQL QUERY
-                let sql = `SELECT SL_NO, NARRATION, SEND_USER_ID, VIEW_FLAG, CREATED_DT FROM td_notification WHERE bank_id = ${pax_id} order by sl_no desc`
+                let sql = `SELECT SL_NO, NARRATION, SEND_USER_ID, VIEW_FLAG, (CREATED_DT+1) CREATED_DT FROM td_notification WHERE bank_id = ${pax_id} order by sl_no desc`
                 console.log(sql);
                 // EXICUTE QUERY
                 const result = await con.execute(sql, [], {
