@@ -1,5 +1,5 @@
 const galleryRouter = require('express').Router(),
-{ F_Select, F_Insert, Api_Insert } = require("../controller/masterController"),
+{ F_Select, F_Insert, Api_Insert, F_Delete } = require("../controller/masterController"),
 upload = require('express-fileupload'),
 dateFormat = require('dateformat');
 require('dotenv').config();
@@ -82,6 +82,26 @@ galleryRouter.post('/save_img', async (req, res) => {
         })
     }else{
         res.send({suc: 0, msg: "No file selected"})
+    }
+})
+
+galleryRouter.get('/img_gallery_del', async (req, res) => {
+    var data = req.query,
+    user = req.session.user;
+    var res_dt = await F_Delete(user.BANK_ID, 'TD_IMG_GALLERY', `SL_NO=${data.id}`)
+
+    if (res_dt.suc > 0) {
+        req.session.message = {
+          type: "success",
+          message: "Successfully Deleted!!",
+        };
+        res.redirect(`/admin/img_gallery`);
+    } else {
+        req.session.message = {
+          type: "danger",
+          message: "Data Not Deleted!!",
+        };
+        res.redirect(`/admin/img_gallery`);
     }
 })
 

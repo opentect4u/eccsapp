@@ -1,4 +1,4 @@
-const { F_Select } = require('../controller/masterController');
+const { F_Select, F_Delete, F_Insert, Api_Insert } = require('../controller/masterController');
 const { numberToWords } = require('../model/masterModel');
 const appFormRouter = require('express').Router(),
 dateFormat = require('dateformat'),
@@ -37,7 +37,7 @@ const membershipApplication = async (req, res, flag, encFlag) => {
     if(pax_id > 0){
         var fields = "*",
             table_name = `TD_MEMB_APPLICATION`,
-            where = data.id > 0 ? `SL_NO=${data.id}` : null,
+            where = data.id > 0 ? `SL_NO=${data.id}` : `DELETE_FLAG != 'Y'`,
             order = null,
             dtFlag = data.id > 0 ? 0 : 1;
         var resDt = await F_Select(pax_id, fields, table_name, where, order, dtFlag)
@@ -60,7 +60,7 @@ const loanApplication = async (req, res, flag, encFlag) => {
     if(pax_id > 0){
         var fields = "*",
             table_name = `TD_GEN_LOAN_APPLICATION`,
-            where = data.id > 0 ? `SL_NO=${data.id}` : null,
+            where = data.id > 0 ? `SL_NO=${data.id}` : `DELETE_FLAG != 'Y'`,
             order = null,
             dtFlag = data.id > 0 ? 0 : 1;
         var resDt = await F_Select(pax_id, fields, table_name, where, order, dtFlag)
@@ -84,7 +84,7 @@ const addShareApplication = async (req, res, flag, encFlag) => {
     if(pax_id > 0){
         var fields = "*",
             table_name = `TD_ADD_SHARE_APPLICATION`,
-            where = data.id > 0 ? `SL_NO=${data.id}` : null,
+            where = data.id > 0 ? `SL_NO=${data.id}` : `DELETE_FLAG != 'Y'`,
             order = null,
             dtFlag = data.id > 0 ? 0 : 1;
         var resDt = await F_Select(pax_id, fields, table_name, where, order, dtFlag)
@@ -99,6 +99,57 @@ const addShareApplication = async (req, res, flag, encFlag) => {
         res.redirect('/admin/login')
     }
 }
+
+appFormRouter.get('/application_form_delete', async (req, res) => {
+    var data = req.query
+    var encFlag = data.flag,
+    user = req.session.user, table_name, fields, whr,
+    datetime = dateFormat(new Date(), "dd-mmm-yy");
+    var flag = new Buffer.from(encFlag, 'base64').toString();
+
+    switch (flag) {
+        case 'M':
+            table_name = 'TD_MEMB_APPLICATION'
+            fields = `DELETE_FLAG = :0, MODIFIED_BY = :1, MODIFIED_DT = :2`
+            values = ['Y', user.USER_NAME, datetime]
+            whr = `SL_NO=${data.id}`;
+            break;
+        case 'G':
+            table_name = 'TD_GEN_LOAN_APPLICATION'
+            fields = `RESET_REMARKS = :0, MODIFIED_BY = :1, MODIFIED_DT = :2`
+            values = ['Y', user.USER_NAME, datetime]
+            whr = `SL_NO=${data.id}`;
+            break;
+        case 'A':
+            table_name = 'TD_ADD_SHARE_APPLICATION'
+            fields = `RESET_REMARKS = :0, MODIFIED_BY = :1, MODIFIED_DT = :2`
+            values = ['Y', user.USER_NAME, datetime]
+            whr = `SL_NO=${data.id}`;
+            break;
+        default:
+            table_name = null
+            fields = null;
+            values = null
+            whr = null;
+            break;
+    }
+
+    var res_dt = await Api_Insert(user.BANK_ID, table_name, fields, null, values, whr, 1)
+
+    if (res_dt.suc > 0) {
+        req.session.message = {
+          type: "success",
+          message: "Successfully Deleted!!",
+        };
+        res.redirect(`/admin/application_form?flag=${encFlag}`);
+    } else {
+        req.session.message = {
+          type: "danger",
+          message: "Data Not Deleted!!",
+        };
+        res.redirect(`/admin/application_form?flag=${encFlag}`);
+    }
+})
 
 appFormRouter.get('/download-pdf', async (req, res) => {
     try{

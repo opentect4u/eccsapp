@@ -60,6 +60,7 @@
                         <th>Allot Stock</th>
                       <% } %>
                       <th>View</th>
+                      <th>Delete</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -88,12 +89,13 @@
                                     <td><%= dt.STOCK_ALLOT %></td>
                                 <% } %>
                                 <td><a href="/admin/application_form?flag=<%= encFlag %>&id=<%= dt.SL_NO %>" target="_blank" class="btn btn-primary">View</a></td>
+                                <td><a href="/admin/application_form_delete?flag=<%= encFlag %>&id=<%= dt.SL_NO %>" target="_blank" class="btn btn-danger" onclick="return deleteUser()">Delete</a></td>
                             </tr>
                     <% i++;
                         })
                     }else{ %>
                         <tr>
-                            <td colspan="8" class="text-center text-danger">No data found</td>
+                            <td colspan="9" class="text-center text-danger">No data found</td>
                         </tr>
                     <% } %>
                   </tbody>

@@ -462,3 +462,25 @@ label:not(.form-check-label):not(.custom-file-label) {
   color: #fff;
   font-weight: 600;
 }
+
+.img-container{
+    position: relative;
+}
+.img-container .img-del-btn{
+    position: absolute;
+    right: 15px;
+    top: 5px;
+    color: red;
+    font-size: 15px;
+    font-weight: 600;
+    visibility: hidden;
+    opacity: 0;
+    transition: 
+        visibility 0s, opacity 0.5s ease;
+}
+
+.img-container:hover 
+        .img-del-btn {
+            visibility: visible;
+            opacity: 1;
+        }
